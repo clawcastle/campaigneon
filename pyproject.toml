@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "campaigneon"
+version = "0.1.0"
+description = "An application for managing and generating content for DnD campaigns."
+authors = ["anderskloborg <anderskloborg@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
