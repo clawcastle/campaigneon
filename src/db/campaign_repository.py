@@ -9,7 +9,7 @@ class CampaignRepository:
             async with await conn.cursor() as cur:
                 await cur.execute(
                     """
-                SELECT "id", "name", created_at 
+                SELECT "id", "title", created_at 
                 FROM campaigns 
                 INNER JOIN campaign_members ON "id" = campaign_id 
                 WHERE user_id = %s

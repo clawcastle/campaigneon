@@ -18,7 +18,7 @@ class Campaign:
 class Query:
     @strawberry.field
     async def campaigns(self) -> List[Campaign]:
-        campaigns = await CampaignRepository.get_campaigns("user_id")
+        campaigns = await CampaignRepository.get_campaigns(str(uuid4()))
 
         return campaigns
     
