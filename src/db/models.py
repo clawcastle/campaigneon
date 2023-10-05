@@ -65,9 +65,9 @@ class EntryMetadata:
 
 
 class Campaign:
-    def __init__(self, id: str, name: str, created_at: datetime) -> None:
+    def __init__(self, id: str, title: str, created_at: datetime) -> None:
         self.id = id
-        self.name = name
+        self.title = title
         self.created_at = created_at
 
 

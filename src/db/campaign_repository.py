@@ -1,10 +1,10 @@
 from db.models import Campaign
-import aiopg
-
+from uuid import UUID
 from db.connection_pool import connection_pool
+from typing import List
 
 class CampaignRepository:
-    async def get_campaigns(user_id: str) -> list[Campaign]:
+    async def get_campaigns(user_id: UUID) -> List[Campaign]:
         async with await connection_pool.acquire() as conn:
             async with await conn.cursor() as cur:
                 await cur.execute(

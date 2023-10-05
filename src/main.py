@@ -3,25 +3,9 @@ from fastapi import FastAPI
 import uvicorn
 import strawberry
 from strawberry.fastapi import GraphQLRouter
-from uuid import UUID, uuid4
-from typing import List
 
 from db.campaign_repository import CampaignRepository
-
-@strawberry.type
-class Campaign:
-    id: UUID
-    title: str
-    
-
-@strawberry.type
-class Query:
-    @strawberry.field
-    async def campaigns(self) -> List[Campaign]:
-        campaigns = await CampaignRepository.get_campaigns(str(uuid4()))
-
-        return campaigns
-    
+from graph_ql.query import Query
 
 schema = strawberry.Schema(Query)
 
