@@ -4,21 +4,16 @@ import uvicorn
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 from graph_ql.context import get_context
+from graph_ql.mutation import Mutation
 
 from graph_ql.query import Query
 
-schema = strawberry.Schema(Query)
+schema = strawberry.Schema(Query, Mutation)
 
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
-
-
-@app.get("/hello_world")
-def hello_world():
-    return "hello world"
-
 
 if __name__ == "__main__":
     load_dotenv()

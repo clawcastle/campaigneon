@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 
 
 class User:
@@ -65,10 +66,13 @@ class EntryMetadata:
 
 
 class Campaign:
-    def __init__(self, id: str, title: str, created_at: datetime) -> None:
+    def __init__(
+        self, id: UUID, title: str, created_at: datetime, created_by: str
+    ) -> None:
         self.id = id
         self.title = title
         self.created_at = created_at
+        self.created_by = created_by
 
 
 class CampaignMember:

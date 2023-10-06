@@ -6,7 +6,6 @@ from strawberry.types.info import RootValueType
 from db.campaign_repository import CampaignRepository
 from graph_ql.context import Context
 from graph_ql.types import Campaign
-from uuid import uuid4
 
 Info = _Info[Context, RootValueType]
 
