@@ -3,8 +3,9 @@ from uuid import UUID
 from db.connection_pool import connection_pool
 from typing import List
 
+
 class CampaignRepository:
-    async def get_campaigns(user_id: UUID) -> List[Campaign]:
+    async def get_campaigns(user_id: str) -> List[Campaign]:
         async with await connection_pool.acquire() as conn:
             async with await conn.cursor() as cur:
                 await cur.execute(
@@ -18,6 +19,8 @@ class CampaignRepository:
                 )
                 results = await cur.fetchall()
 
-                campaigns = [Campaign(result[0], result[1], result[2]) for result in results]
+                campaigns = [
+                    Campaign(result[0], result[1], result[2]) for result in results
+                ]
 
                 return campaigns
