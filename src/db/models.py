@@ -10,15 +10,11 @@ class User:
         display_name: str,
         email: str,
         created_at: int,
-        password_hash: str,
-        password_salt: str,
     ) -> None:
         self.id = id
-        self.display_name = display_name
         self.email = email
         self.created_at = created_at
-        self.password_hash = password_hash
-        self.password_salt = password_salt
+        self.display_name = display_name
 
 
 class Entry:

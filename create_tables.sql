@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS public.campaigns
     created_by text NOT NULL,
     CONSTRAINT campaigns_pkey PRIMARY KEY (id),
     CONSTRAINT created_by_fk FOREIGN KEY (created_by) REFERENCES public.users (id)
-
 );
 
 CREATE TABLE IF NOT EXISTS public.campaign_members
