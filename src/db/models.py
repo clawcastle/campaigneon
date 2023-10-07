@@ -85,11 +85,11 @@ class CampaignMember:
 class Category:
     def __init__(
         self,
-        id: str,
-        campaign_id: str,
+        id: UUID,
+        campaign_id: UUID,
         title: str,
         created_at: datetime,
-        parent_id: Optional[str],
+        parent_id: Optional[UUID],
     ) -> None:
         self.id = id
         self.campaign_id = campaign_id

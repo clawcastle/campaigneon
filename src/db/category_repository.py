@@ -28,7 +28,8 @@ class CategoryRepository:
                 SELECT id, title, created_at, parent_id
                 FROM categories
                 WHERE campaign_id = $1
-                """
+                """,
+                campaign_id
             )
 
             return [

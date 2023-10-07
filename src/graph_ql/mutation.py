@@ -1,3 +1,4 @@
+from typing import Optional
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
@@ -5,8 +6,8 @@ from db.campaign_repository import CampaignRepository
 from graph_ql.context import Context
 
 from datetime import datetime
-from uuid import uuid4
-from graph_ql.types import Campaign
+from uuid import uuid4, UUID
+from graph_ql.types import Campaign, Category
 import db.models
 
 Info = _Info[Context, RootValueType]
@@ -23,3 +24,9 @@ class Mutation:
         created_campaign = await CampaignRepository.create_campaign(campaign)
 
         return created_campaign
+
+    @strawberry.mutation
+    async def create_category(self, campaign_id: UUID, title: str, parent_id: Optional[UUID]) -> Category:
+        created_category = db.models.Category(uuid4(), campaign_id=campaign_id, title=title, created_at=datetime.now(), parent_id=parent_id)
+
+        return created_category
