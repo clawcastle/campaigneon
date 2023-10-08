@@ -39,7 +39,8 @@ class Mutation:
     async def create_entry(self, title: str, campaign_id: UUID, category_id: Optional[UUID], info: Info) -> Entry:
         user = info.context.user
 
-        entry = db.models.Entry(uuid4(), campaign_id, title, "", "", datetime.now(), datetime.now(), user.user_id, user.user_id, None, category_id, None)
+        now = datetime.now()
+        entry = db.models.Entry(uuid4(), campaign_id, title, "", "", now, now, user.user_id, user.user_id, None, category_id, None)
 
         await EntryRepository.create_entry(entry)
 

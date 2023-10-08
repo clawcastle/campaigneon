@@ -5,8 +5,9 @@ from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
 from db.campaign_repository import CampaignRepository
 from db.category_repository import CategoryRepository
+from db.entry_repository import EntryRepository
 from graph_ql.context import Context
-from graph_ql.types import Campaign, Category
+from graph_ql.types import Campaign, Category, Entry
 
 Info = _Info[Context, RootValueType]
 
@@ -27,3 +28,9 @@ class Query:
         categories = await CategoryRepository.get_categories(campaign_id)
 
         return categories
+    
+    @strawberry.field
+    async def entry(self, entry_id: UUID) -> Entry:
+        entry = await EntryRepository.get_entry(entry_id)
+
+        return entry
