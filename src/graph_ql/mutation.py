@@ -3,6 +3,8 @@ import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
 from db.campaign_repository import CampaignRepository
+from db.category_repository import CategoryRepository
+from db.entry_repository import EntryRepository
 from graph_ql.context import Context
 
 from datetime import datetime
@@ -26,8 +28,10 @@ class Mutation:
         return created_campaign
 
     @strawberry.mutation
-    async def create_category(self, campaign_id: UUID, title: str, parent_id: Optional[UUID]) -> Category:
-        created_category = db.models.Category(uuid4(), campaign_id=campaign_id, title=title, created_at=datetime.now(), parent_id=parent_id)
+    async def create_category(self, campaign_id: UUID, title: str, parent_id: Optional[UUID] = None) -> Category:
+        category = db.models.Category(uuid4(), campaign_id=campaign_id, title=title, created_at=datetime.now(), parent_id=parent_id)
+
+        created_category = await CategoryRepository.create_category(category)
 
         return created_category
     
@@ -37,6 +41,6 @@ class Mutation:
 
         entry = db.models.Entry(uuid4(), campaign_id, title, "", "", datetime.now(), datetime.now(), user.user_id, user.user_id, None, category_id, None)
 
-        # TODO: Save to database
+        await EntryRepository.create_entry(entry)
 
         return entry
