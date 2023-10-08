@@ -29,9 +29,9 @@ class Entry:
         last_modified_at: datetime,
         created_by: str,
         last_modified_by: str,
-        entry_text_summary: Optional[str] = None,
-        category_id: Optional[str] = None,
-        image_url: Optional[str] = None,
+        entry_text_summary: Optional[str],
+        category_id: Optional[str],
+        image_url: Optional[str],
     ) -> None:
         self.id = id
         self.campaign_id = campaign_id

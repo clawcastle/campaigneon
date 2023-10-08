@@ -20,3 +20,18 @@ class Category:
     title: str
     created_at: datetime
     parent_id: Optional[UUID]
+
+@strawberry.type
+class Entry:
+    id: UUID
+    campaign_id: str
+    title: str
+    entry_text_rich: str
+    entry_text_raw: str
+    created_at: datetime
+    last_modified_at: datetime
+    created_by: str
+    last_modified_by: str
+    entry_text_summary: Optional[str]
+    category_id: Optional[str]
+    image_url: Optional[str]

@@ -56,5 +56,5 @@ CREATE TABLE IF NOT EXISTS public.entries
     CONSTRAINT campaign_id_fk FOREIGN KEY (campaign_id) REFERENCES public.campaigns(id),
     CONSTRAINT created_by_fk FOREIGN KEY (created_by) REFERENCES public.users(id),
     CONSTRAINT last_modified_by_fk FOREIGN KEY (last_modified_by) REFERENCES public.users(id),
-    CONSTRAINT category_id_fk FOREIGN KEY (category_id) REFERENCES public.categories(id),
+    CONSTRAINT category_id_fk FOREIGN KEY (category_id) REFERENCES public.categories(id)
 );

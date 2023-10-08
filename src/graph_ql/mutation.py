@@ -7,7 +7,7 @@ from graph_ql.context import Context
 
 from datetime import datetime
 from uuid import uuid4, UUID
-from graph_ql.types import Campaign, Category
+from graph_ql.types import Campaign, Category, Entry
 import db.models
 
 Info = _Info[Context, RootValueType]
@@ -30,3 +30,13 @@ class Mutation:
         created_category = db.models.Category(uuid4(), campaign_id=campaign_id, title=title, created_at=datetime.now(), parent_id=parent_id)
 
         return created_category
+    
+    @strawberry.mutation
+    async def create_entry(self, title: str, campaign_id: UUID, category_id: Optional[UUID], info: Info) -> Entry:
+        user = info.context.user
+
+        entry = db.models.Entry(uuid4(), campaign_id, title, "", "", datetime.now(), datetime.now(), user.user_id, user.user_id, None, category_id, None)
+
+        # TODO: Save to database
+
+        return entry
