@@ -20,26 +20,30 @@ class User:
 class Entry:
     def __init__(
         self,
-        id: str,
-        title: str,
+        id: UUID,
         campaign_id: str,
-        category_id: str,
+        title: str,
         entry_text_rich: str,
         entry_text_raw: str,
         created_at: datetime,
         last_modified_at: datetime,
-        summary: Optional[str] = None,
+        created_by: str,
+        last_modified_by: str,
+        entry_text_summary: Optional[str] = None,
+        category_id: Optional[str] = None,
         image_url: Optional[str] = None,
     ) -> None:
         self.id = id
-        self.title = title
         self.campaign_id = campaign_id
-        self.category_id = category_id
+        self.title = title
         self.entry_text_rich = entry_text_rich
         self.entry_text_raw = entry_text_raw
         self.created_at = created_at
         self.last_modified_at = last_modified_at
-        self.summary = summary
+        self.created_by = created_by
+        self.last_modified_by = last_modified_by
+        self.entry_text_summary = entry_text_summary
+        self.category_id = category_id
         self.image_url = image_url
 
 
