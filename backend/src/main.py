@@ -1,6 +1,7 @@
 from datetime import datetime
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import strawberry
 from strawberry.fastapi import GraphQLRouter
@@ -16,6 +17,14 @@ schema = strawberry.Schema(Query, Mutation)
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 app = FastAPI()
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=["http://localhost:3000"],
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"],
+)
+
 app.include_router(graphql_app, prefix="/graphql")
 
 @app.post("/users")

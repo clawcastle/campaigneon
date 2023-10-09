@@ -28,7 +28,7 @@ class CampaignRepository:
         async with await connection_pool.acquire() as conn:
             results = await conn.fetch(
                 """
-                SELECT "id", "title", created_at 
+                SELECT "id", "title", created_at, created_by
                 FROM campaigns 
                 INNER JOIN campaign_members ON "id" = campaign_id 
                 WHERE user_id = $1
@@ -37,7 +37,7 @@ class CampaignRepository:
             )
 
             campaigns = [
-                Campaign(result[0], result[1], result[2]) for result in results
+                Campaign(result[0], result[1], result[2], result[3]) for result in results
             ]
 
             return campaigns
