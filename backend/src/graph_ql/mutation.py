@@ -2,7 +2,7 @@ from typing import Optional
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
-from db.campaign_repository import CampaignRepository
+from db.campaign_repository import CampaignRepository, UpdateCampaignModel
 from db.category_repository import CategoryRepository
 from db.entry_repository import EntryRepository
 from graph_ql.context import Context
@@ -26,6 +26,14 @@ class Mutation:
         created_campaign = await CampaignRepository.create_campaign(campaign)
 
         return created_campaign
+    
+    @strawberry.mutation
+    async def update_campaign(self, campaign_id: UUID, title: str) -> Campaign:
+        update_model = UpdateCampaignModel(campaign_id, title)
+
+        updated_campaign = await CampaignRepository.update_campaign(update_model)
+
+        return updated_campaign
 
     @strawberry.mutation
     async def create_category(self, campaign_id: UUID, title: str, parent_id: Optional[UUID] = None) -> Category:
