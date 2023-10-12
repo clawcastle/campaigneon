@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS public.entries
     created_by text NOT NULL,
     last_modified_by text NOT NULL,
     category_id uuid,
-    image_url text,
     CONSTRAINT entries_pkey PRIMARY KEY (id),
     CONSTRAINT campaign_id_fk FOREIGN KEY (campaign_id) REFERENCES public.campaigns(id),
     CONSTRAINT created_by_fk FOREIGN KEY (created_by) REFERENCES public.users(id),

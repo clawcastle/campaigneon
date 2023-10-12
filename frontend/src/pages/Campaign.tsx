@@ -1,6 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "../__generated__"
 import { useParams } from "react-router-dom";
+import { Page } from "./Page";
+import { TextField, Typography } from "@mui/material";
 
 const FETCH_CAMPAIGNS_QUERY = gql(`
                         query FetchCampaigns {
@@ -26,5 +28,7 @@ export const CampaignPage = () => {
         return <div>Campaign not found...</div>
     }
 
-    return <h2>{campaign.title}</h2>
+    return <Page>
+        <Typography variant="h5">{campaign.title}</Typography>
+    </Page>
 }

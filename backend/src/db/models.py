@@ -31,7 +31,6 @@ class Entry:
         last_modified_by: str,
         entry_text_summary: Optional[str],
         category_id: Optional[str],
-        image_url: Optional[str],
     ) -> None:
         self.id = id
         self.campaign_id = campaign_id
@@ -44,7 +43,6 @@ class Entry:
         self.last_modified_by = last_modified_by
         self.entry_text_summary = entry_text_summary
         self.category_id = category_id
-        self.image_url = image_url
 
 
 class EntryMetadata:

@@ -34,4 +34,3 @@ class Entry:
     last_modified_by: str
     entry_text_summary: Optional[str]
     category_id: Optional[str]
-    image_url: Optional[str]
