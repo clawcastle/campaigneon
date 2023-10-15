@@ -53,3 +53,17 @@ class Mutation:
         await EntryRepository.create_entry(entry)
 
         return entry
+    
+    @strawberry.mutation
+    async def update_entry(self, entry_id: UUID, title: str, entry_text_rich: str, entry_text_raw: str, entry_text_summary: Optional[str], info: Info) -> Entry:
+        now = datetime.now()
+        user_id = info.context.user.user_id
+        
+        existing_entry = await EntryRepository.get_entry(entry_id)
+
+        if existing_entry is None:
+            raise Exception("Entry does not exist")
+        
+        updated_entry = db.models.Entry(existing_entry.id, existing_entry.campaign_id, title, entry_text_rich, entry_text_raw, existing_entry.created_at, now, existing_entry.created_by, user_id, entry_text_summary, existing_entry.category_id)
+
+        await EntryRepository.update_entry(updated_entry)

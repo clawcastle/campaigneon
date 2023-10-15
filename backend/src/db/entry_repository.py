@@ -50,3 +50,5 @@ class EntryRepository:
                           )
             
             return entry
+        
+        
