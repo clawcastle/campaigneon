@@ -4,7 +4,7 @@ from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
 from db.campaign_repository import CampaignRepository, UpdateCampaignModel
 from db.category_repository import CategoryRepository
-from db.entry_repository import EntryRepository
+from db.entry_repository import EntryRepository, UpdateEntryModel
 from graph_ql.context import Context
 
 from datetime import datetime
@@ -58,12 +58,9 @@ class Mutation:
     async def update_entry(self, entry_id: UUID, title: str, entry_text_rich: str, entry_text_raw: str, entry_text_summary: Optional[str], info: Info) -> Entry:
         now = datetime.now()
         user_id = info.context.user.user_id
-        
-        existing_entry = await EntryRepository.get_entry(entry_id)
 
-        if existing_entry is None:
-            raise Exception("Entry does not exist")
+        update_model = UpdateEntryModel(entry_id, title, entry_text_rich, entry_text_raw, now, user_id, entry_text_summary)
         
-        updated_entry = db.models.Entry(existing_entry.id, existing_entry.campaign_id, title, entry_text_rich, entry_text_raw, existing_entry.created_at, now, existing_entry.created_by, user_id, entry_text_summary, existing_entry.category_id)
+        updated_entry = await EntryRepository.update_entry(update_model)
 
-        await EntryRepository.update_entry(updated_entry)
+        return updated_entry
