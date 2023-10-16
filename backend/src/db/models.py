@@ -49,18 +49,22 @@ class EntryMetadata:
     def __init__(
         self,
         id: str,
-        title: str,
         campaign_id: str,
-        category_id: str,
+        title: str,
         created_at: datetime,
+        created_by: str,
         last_modified_at: datetime,
+        last_modified_by: str,
+        category_id: Optional[str],
     ) -> None:
         self.id = id
-        self.title = title
         self.campaign_id = campaign_id
-        self.category_id = category_id
+        self.title = title
         self.created_at = created_at
+        self.created_by = created_by
         self.last_modified_at = last_modified_at
+        self.last_modified_by = last_modified_by
+        self.category_id = category_id
 
 
 class Campaign:

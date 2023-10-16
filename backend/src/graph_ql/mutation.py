@@ -26,7 +26,7 @@ class Mutation:
         created_campaign = await CampaignRepository.create_campaign(campaign)
 
         return created_campaign
-    
+
     @strawberry.mutation
     async def update_campaign(self, campaign_id: UUID, title: str) -> Campaign:
         update_model = UpdateCampaignModel(campaign_id, title)
@@ -36,31 +36,74 @@ class Mutation:
         return updated_campaign
 
     @strawberry.mutation
-    async def create_category(self, campaign_id: UUID, title: str, parent_id: Optional[UUID] = None) -> Category:
-        category = db.models.Category(uuid4(), campaign_id=campaign_id, title=title, created_at=datetime.now(), parent_id=parent_id)
+    async def create_category(
+        self, campaign_id: UUID, title: str, parent_id: Optional[UUID] = None
+    ) -> Category:
+        category = db.models.Category(
+            uuid4(),
+            campaign_id=campaign_id,
+            title=title,
+            created_at=datetime.now(),
+            parent_id=parent_id,
+        )
 
         created_category = await CategoryRepository.create_category(category)
 
         return created_category
-    
+
     @strawberry.mutation
-    async def create_entry(self, title: str, campaign_id: UUID, category_id: Optional[UUID], info: Info) -> Entry:
+    async def create_entry(
+        self,
+        title: str,
+        campaign_id: UUID,
+        info: Info,
+        category_id: Optional[UUID] = None,
+    ) -> Entry:
         user = info.context.user
 
         now = datetime.now()
-        entry = db.models.Entry(uuid4(), campaign_id, title, "", "", now, now, user.user_id, user.user_id, None, category_id, None)
 
-        await EntryRepository.create_entry(entry)
+        entry = db.models.Entry(
+            uuid4(),
+            campaign_id,
+            title,
+            "",
+            "",
+            now,
+            now,
+            user.user_id,
+            user.user_id,
+            None,
+            category_id,
+        )
 
-        return entry
-    
+        created_entry = await EntryRepository.create_entry(entry)
+
+        return created_entry
+
     @strawberry.mutation
-    async def update_entry(self, entry_id: UUID, title: str, entry_text_rich: str, entry_text_raw: str, entry_text_summary: Optional[str], info: Info) -> Entry:
+    async def update_entry(
+        self,
+        entry_id: UUID,
+        title: str,
+        entry_text_rich: str,
+        entry_text_raw: str,
+        entry_text_summary: Optional[str],
+        info: Info,
+    ) -> Entry:
         now = datetime.now()
         user_id = info.context.user.user_id
 
-        update_model = UpdateEntryModel(entry_id, title, entry_text_rich, entry_text_raw, now, user_id, entry_text_summary)
-        
+        update_model = UpdateEntryModel(
+            entry_id,
+            title,
+            entry_text_rich,
+            entry_text_raw,
+            now,
+            user_id,
+            entry_text_summary,
+        )
+
         updated_entry = await EntryRepository.update_entry(update_model)
 
         return updated_entry

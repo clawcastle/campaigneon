@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client";
 import { gql } from "../__generated__"
 import { useParams } from "react-router-dom";
 import { Page } from "./Page";
-import { TextField, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import { useCampaignItemsMetadata } from "../hooks/graphQlHooks"
 
 const FETCH_CAMPAIGNS_QUERY = gql(`
                         query FetchCampaigns {
@@ -17,6 +18,7 @@ export const CampaignPage = () => {
     const { campaignId } = useParams();
 
     const { data, loading } = useQuery(FETCH_CAMPAIGNS_QUERY);
+    const { data: campaignItemsMetadata, loading: loadingCampaignItemsMetadata } = useCampaignItemsMetadata(campaignId ?? "");
 
     if (loading) {
         return <div>Loading...</div>
@@ -29,6 +31,10 @@ export const CampaignPage = () => {
     }
 
     return <Page>
-        <Typography variant="h5">{campaign.title}</Typography>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography variant="h5">{campaign.title}</Typography>
+            </Grid>
+        </Grid>
     </Page>
 }

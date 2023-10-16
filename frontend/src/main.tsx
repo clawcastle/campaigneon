@@ -9,11 +9,17 @@ const router = createBrowserRouter(routes);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Auth0Provider domain="campaigneon.eu.auth0.com" clientId="0Hrfqnycryw5HJNCLUkYNIe9TW4txtjq" authorizationParams={{
-      redirect_uri: window.location.origin,
-      audience: "https://campaigneon",
-      scope: "read:campaigns"
-    }}>
+    <Auth0Provider
+      domain="campaigneon.eu.auth0.com"
+      clientId="0Hrfqnycryw5HJNCLUkYNIe9TW4txtjq"
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: "https://campaigneon",
+        scope: "read:campaigns"
+      }}
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
+      useRefreshTokensFallback={true}>
       <GraphQlClientProvider>
         <RouterProvider router={router} />
       </GraphQlClientProvider>
