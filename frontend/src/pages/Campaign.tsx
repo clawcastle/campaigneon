@@ -1,34 +1,22 @@
-import { useQuery } from "@apollo/client";
-import { gql } from "../__generated__"
 import { useParams } from "react-router-dom";
 import { Page } from "./Page";
 import { Grid, Typography } from "@mui/material";
-import { useCampaignItemsMetadata } from "../hooks/graphQlHooks"
-
-const FETCH_CAMPAIGNS_QUERY = gql(`
-                        query FetchCampaigns {
-                            campaigns {
-                                id
-                                title
-                            }
-                        }
-`);
+import { useFetchCampaign } from "../hooks/graphQlHooks"
 
 export const CampaignPage = () => {
     const { campaignId } = useParams();
 
-    const { data, loading } = useQuery(FETCH_CAMPAIGNS_QUERY);
-    const { data: campaignItemsMetadata, loading: loadingCampaignItemsMetadata } = useCampaignItemsMetadata(campaignId ?? "");
+    const { data, loading } = useFetchCampaign(campaignId ?? "");
 
     if (loading) {
         return <div>Loading...</div>
     }
 
-    const campaign = data?.campaigns.find(campaign => campaign.id === campaignId);
-
-    if (!campaign) {
+    if (!data) {
         return <div>Campaign not found...</div>
     }
+
+    const { campaign } = data;
 
     return <Page>
         <Grid container spacing={2}>
