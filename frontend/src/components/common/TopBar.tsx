@@ -1,4 +1,3 @@
-import "./TopBar.css";
 import { CampaignSelector } from "../campaign/CampaignSelector";
 import { AppBar, Toolbar } from "@mui/material";
 

@@ -32,7 +32,10 @@ export const CreateCampaignDialog = ({
   const [campaignTitle, setCampaignTitle] = useState("");
 
   const [createCampaignMutationFn, { loading, error }] = useMutation(
-    CREATE_CAMPAIGN_MUTATION
+    CREATE_CAMPAIGN_MUTATION,
+    {
+      refetchQueries: ["FetchCampaigns"],
+    }
   );
 
   const onCreateButtonClicked = async () => {

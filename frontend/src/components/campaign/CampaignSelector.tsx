@@ -4,13 +4,12 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  alpha,
-  styled,
 } from "@mui/material";
 import { gql } from "../../__generated__";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { CreateCampaignDialog } from "./CreateCampaignDialog";
+import { useNavigate } from "react-router-dom";
 
 const FETCH_CAMPAIGNS_QUERY = gql(`
                         query FetchCampaigns {
@@ -27,6 +26,7 @@ const CREATE_CAMPAIGN_SELECT_ITEM_KEY = "CREATE_CAMPAIGN";
 type SelectedCampaign = { id: string; title: string } | undefined;
 
 export const CampaignSelector = () => {
+  const navigate = useNavigate();
   const [selectedCampaign, setSelectedCampaign] = useState<SelectedCampaign>();
   const [createCampaignDialogOpen, setCreateCampaignDialogOpen] =
     useState(false);
@@ -37,7 +37,7 @@ export const CampaignSelector = () => {
       return;
     }
 
-    if (e.target.value === null) {
+    if (!e.target.value) {
       setSelectedCampaign(undefined);
     } else if (e.target.value === CREATE_CAMPAIGN_SELECT_ITEM_KEY) {
       setCreateCampaignDialogOpen(true);
@@ -45,8 +45,8 @@ export const CampaignSelector = () => {
       const selectedCampaign = data.campaigns.find(
         (c) => c.id === e.target.value
       );
-
       setSelectedCampaign(selectedCampaign);
+      navigate(`campaigns/${e.target.value}`);
     }
   };
 
