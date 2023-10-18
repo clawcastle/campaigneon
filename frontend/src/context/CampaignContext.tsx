@@ -1,32 +1,43 @@
 import React, { createContext, useMemo } from "react";
 import { Campaign, CampaignItemMetadata } from "../models/models";
-import { useFetchCampaign, FetchCampaignQueryError } from "../hooks/useFetchCampaign";
-
+import {
+  useFetchCampaign,
+  FetchCampaignQueryError,
+} from "../hooks/useFetchCampaign";
 
 type CampaignContextValue = {
-    campaign?: Campaign;
-    campaignItemsMetadata?: CampaignItemMetadata[];
-    loading: boolean;
-    error?: FetchCampaignQueryError;
-}
+  campaign?: Campaign;
+  campaignItemsMetadata?: CampaignItemMetadata[];
+  loading: boolean;
+  error?: FetchCampaignQueryError;
+};
 
 export const CampaignContext = createContext<CampaignContextValue>({
-    loading: true
+  loading: true,
 });
 
 type CampaignContextProviderProps = {
-    campaignId: string;
-    children?: React.ReactNode;
-}
+  campaignId: string;
+  children?: React.ReactNode;
+};
 
-export const CampaignContextProvider: React.FC<CampaignContextProviderProps> = ({ campaignId, children }) => {
-    const { data, loading, error } = useFetchCampaign(campaignId);
+export const CampaignContextProvider: React.FC<
+  CampaignContextProviderProps
+> = ({ campaignId, children }) => {
+  const { data, loading, error } = useFetchCampaign(campaignId);
 
-    const contextValue: CampaignContextValue = useMemo(() => ({
-        ...data,
-        loading,
-        error
-    }), [data, error, loading]);
+  const contextValue: CampaignContextValue = useMemo(
+    () => ({
+      ...data,
+      loading,
+      error,
+    }),
+    [data, error, loading]
+  );
 
-    return <CampaignContext.Provider value={contextValue}>{children}</CampaignContext.Provider>
-}
+  return (
+    <CampaignContext.Provider value={contextValue}>
+      {children}
+    </CampaignContext.Provider>
+  );
+};

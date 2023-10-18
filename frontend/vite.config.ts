@@ -8,5 +8,5 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
   },
-  envPrefix: ["VITE_", "CAMPAIGNEON"],
+  envPrefix: ["VITE_", "CAMPAIGNEON_"],
 });

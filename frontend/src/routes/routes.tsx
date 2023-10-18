@@ -1,10 +1,13 @@
 import { HomePage } from "../pages/Home";
 import { CampaignPage } from "../pages/Campaign";
 
-export const routes = [{
+export const routes = [
+  {
     path: "/",
-    element: <HomePage />
-}, {
+    element: <HomePage />,
+  },
+  {
     path: "campaigns/:campaignId",
-    element: <CampaignPage />
-}];
+    element: <CampaignPage />,
+  },
+];
