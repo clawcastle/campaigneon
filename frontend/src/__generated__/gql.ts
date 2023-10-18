@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n                        query FetchCampaigns {\n                            campaigns {\n                                id\n                                title\n                            }\n                        }\n": types.FetchCampaignsDocument,
+    "\n                        mutation CreateCampaign($title: String!) {\n                          createCampaign(title: $title) {\n                            id\n                            title\n                          }\n                        }\n": types.CreateCampaignDocument,
     "\n                    query FetchCampaignItemsMetadata($campaignId: UUID!) {\n                        campaigns {\n                            id\n                            title\n                            createdAt\n                            createdBy\n                        }\n                        entriesMetadata(campaignId: $campaignId) {\n                            id\n                            title\n                            createdAt\n                            createdBy\n                            lastModifiedAt\n                            lastModifiedBy\n                            categoryId\n                        }\n                        categories(campaignId: $campaignId) {\n                            id\n                            title\n                            parentId\n                            createdAt\n                        }\n                    }\n": types.FetchCampaignItemsMetadataDocument,
 };
 
@@ -35,6 +36,10 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n                        query FetchCampaigns {\n                            campaigns {\n                                id\n                                title\n                            }\n                        }\n"): (typeof documents)["\n                        query FetchCampaigns {\n                            campaigns {\n                                id\n                                title\n                            }\n                        }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n                        mutation CreateCampaign($title: String!) {\n                          createCampaign(title: $title) {\n                            id\n                            title\n                          }\n                        }\n"): (typeof documents)["\n                        mutation CreateCampaign($title: String!) {\n                          createCampaign(title: $title) {\n                            id\n                            title\n                          }\n                        }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
