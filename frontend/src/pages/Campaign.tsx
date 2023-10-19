@@ -6,6 +6,7 @@ import {
   CampaignContext,
   CampaignContextProvider,
 } from "../context/CampaignContext";
+import { CampaignSearchField } from "../components/campaign/CampaignSearchField";
 
 const CampaignPageContent = () => {
   const { campaign, loading, error } = useContext(CampaignContext);
@@ -23,6 +24,7 @@ const CampaignPageContent = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h5">{campaign.title}</Typography>
+          <CampaignSearchField />
         </Grid>
       </Grid>
     </Page>

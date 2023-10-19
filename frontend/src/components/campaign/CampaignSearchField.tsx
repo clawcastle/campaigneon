@@ -14,10 +14,20 @@ export const CampaignSearchField = () => {
   }, [campaignItemsMetadata]);
 
   return (
-    <Autocomplete
-      disablePortal
-      options={searchTerms}
-      renderInput={(params) => <TextField {...params} label="Search" />}
-    />
+    <div
+      style={{
+        display: "flex",
+        width: "100%",
+        alignContent: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Autocomplete
+        sx={{ width: 400 }}
+        disablePortal
+        options={searchTerms}
+        renderInput={(params) => <TextField {...params} label="Search" />}
+      />
+    </div>
   );
 };
