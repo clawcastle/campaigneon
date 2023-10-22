@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Page } from "./Page";
-import { Grid, Typography } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { Box, Grid, Skeleton, Tab, Tabs, Typography } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import {
   CampaignContext,
   CampaignContextProvider,
@@ -9,24 +9,33 @@ import {
 import { CampaignSearchField } from "../components/campaign/CampaignSearchField";
 
 const CampaignPageContent = () => {
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const { campaign, loading, error } = useContext(CampaignContext);
 
-  if (loading) {
-    return <div>Loading..</div>;
-  }
-
-  if (error || !campaign) {
-    return <div>An error occurred while trying to fetch campaign..</div>;
-  }
-
   return (
-    <Page requireAuthenticatedUser>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h5">{campaign.title}</Typography>
-          <CampaignSearchField />
+    <Page requireAuthenticatedUser pageTitle={campaign?.title ?? ""}>
+      {loading && <Skeleton />}
+      {error && <div>An error occurred while trying to fetch campaign..</div>}
+      {campaign && (
+        <Grid container spacing={0}>
+          <Grid item xs={12}>
+            <Tabs
+              value={selectedTabIndex}
+              onChange={(_, value) => {
+                setSelectedTabIndex(value);
+              }}
+            >
+              <Tab label="Home" />
+              <Tab label="Entries" />
+              <Tab label="Media" />
+            </Tabs>
+          </Grid>
+          <Grid item xs={12}>
+            <Box mt={2} />
+            <CampaignSearchField />
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Page>
   );
 };

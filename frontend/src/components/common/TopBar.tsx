@@ -1,9 +1,13 @@
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 
-export const TopBar = () => {
+type TopBarProps = {
+  pageTitle: string;
+};
+
+export const TopBar = ({ pageTitle }: TopBarProps) => {
   const navigate = useNavigate();
 
   const onHomeClicked = useCallback(() => {
@@ -13,10 +17,11 @@ export const TopBar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <HomeIcon sx={{ marginRight: 1, cursor: "pointer" }} />
-        <Typography sx={{ cursor: "pointer" }} onClick={onHomeClicked}>
-          Campaigneon
-        </Typography>
+        <HomeIcon
+          sx={{ marginRight: 1, cursor: "pointer" }}
+          onClick={onHomeClicked}
+        />
+        <Typography>{pageTitle}</Typography>
       </Toolbar>
     </AppBar>
   );

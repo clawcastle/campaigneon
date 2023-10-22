@@ -30,7 +30,7 @@ const HomePageAuthenticated = () => {
   }
 
   return (
-    <Page requireAuthenticatedUser>
+    <Page requireAuthenticatedUser pageTitle="Campaigneon">
       <CreateCampaignDialog
         open={createCampaignDialogOpen}
         onClose={() => {
@@ -38,10 +38,8 @@ const HomePageAuthenticated = () => {
         }}
       />
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Your campaigns</Typography>
-        </Grid>
         <Grid item xs={12} textAlign="center">
+          <Box mt={4} />
           <Typography variant="body2">
             Welcome to campaigneon! Select an existing campaign or{" "}
             <span
@@ -57,12 +55,8 @@ const HomePageAuthenticated = () => {
           <Box mt={4} />
         </Grid>
         {data?.campaigns.map((campaign) => (
-          <Grid item xs={12} md={6}>
-            <CampaignCard
-              key={campaign.id}
-              id={campaign.id}
-              title={campaign.title}
-            />
+          <Grid key={campaign.id} item xs={12} md={6}>
+            <CampaignCard id={campaign.id} title={campaign.title} />
           </Grid>
         ))}
       </Grid>

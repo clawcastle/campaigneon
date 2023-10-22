@@ -5,24 +5,28 @@ import { AuthGuard } from "../components/common/AuthGuard";
 type PageProps = {
   requireAuthenticatedUser: boolean;
   children: React.ReactNode;
+  pageTitle: string;
 };
 
 export const Page: React.FC<PageProps> = ({
   children,
   requireAuthenticatedUser,
+  pageTitle,
 }) => {
   if (requireAuthenticatedUser) {
     return (
-      <AuthGuard>
-        <TopBar />
-        <div style={{ marginTop: 16, marginLeft: 16 }}>{children}</div>
-      </AuthGuard>
+      <>
+        <AuthGuard>
+          <TopBar pageTitle={pageTitle} />
+          <div style={{ marginLeft: 16 }}>{children}</div>
+        </AuthGuard>
+      </>
     );
   }
 
   return (
     <>
-      <TopBar />
+      <TopBar pageTitle={pageTitle} />
       {children}
     </>
   );
