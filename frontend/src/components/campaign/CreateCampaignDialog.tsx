@@ -38,6 +38,11 @@ export const CreateCampaignDialog = ({
     }
   );
 
+  const onDialogClosed = () => {
+    setCampaignTitle("");
+    onClose();
+  };
+
   const onCreateButtonClicked = async () => {
     await createCampaignMutationFn({
       variables: {
@@ -46,7 +51,7 @@ export const CreateCampaignDialog = ({
     });
 
     if (!error) {
-      onClose();
+      onDialogClosed();
     }
   };
 
@@ -63,7 +68,7 @@ export const CreateCampaignDialog = ({
         {!!error && <Typography variant="body2">An error occurred.</Typography>}
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" onClick={onClose}>
+        <Button color="secondary" onClick={onDialogClosed}>
           Cancel
         </Button>
         <Button disabled={loading} onClick={onCreateButtonClicked}>

@@ -1,8 +1,74 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { AuthGuard } from "../components/common/AuthGuard";
 import { Page } from "./Page";
-import { Button, Typography } from "@mui/material";
-import { Navigate } from "react-router-dom";
+import { Box, Button, Grid, Skeleton, Typography } from "@mui/material";
+import { gql } from "../__generated__";
+import { useQuery } from "@apollo/client";
+import { CampaignCard } from "../components/campaign/CampaignCard";
+import { CreateCampaignDialog } from "../components/campaign/CreateCampaignDialog";
+import { useState } from "react";
+
+const FETCH_CAMPAIGNS_QUERY = gql(`
+                        query FetchCampaigns {
+                            campaigns {
+                                id
+                                title
+                            }
+                        }
+`);
+
+const HomePageAuthenticated = () => {
+  const [createCampaignDialogOpen, setCreateCampaignDialogOpen] =
+    useState(false);
+  const { data, loading, error } = useQuery(FETCH_CAMPAIGNS_QUERY);
+
+  if (loading) {
+    return <Skeleton variant="rectangular" />;
+  }
+
+  if (error) {
+    return <Typography variant="h5">Something went wrong.</Typography>;
+  }
+
+  return (
+    <Page requireAuthenticatedUser>
+      <CreateCampaignDialog
+        open={createCampaignDialogOpen}
+        onClose={() => {
+          setCreateCampaignDialogOpen(false);
+        }}
+      />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h5">Your campaigns</Typography>
+        </Grid>
+        <Grid item xs={12} textAlign="center">
+          <Typography variant="body2">
+            Welcome to campaigneon! Select an existing campaign or{" "}
+            <span
+              style={{ color: "blue", cursor: "pointer" }}
+              onClick={() => {
+                setCreateCampaignDialogOpen(true);
+              }}
+            >
+              create a new one
+            </span>{" "}
+            to get started.
+          </Typography>
+          <Box mt={4} />
+        </Grid>
+        {data?.campaigns.map((campaign) => (
+          <Grid item xs={12} md={6}>
+            <CampaignCard
+              key={campaign.id}
+              id={campaign.id}
+              title={campaign.title}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Page>
+  );
+};
 
 const HomePageUnauthenticated = () => {
   const { loginWithRedirect } = useAuth0();
@@ -21,27 +87,6 @@ const HomePageUnauthenticated = () => {
         </Button>
       </div>
     </>
-  );
-};
-
-const HomePageAuthenticated = () => {
-  const lastViewedCampaignId = localStorage.getItem("campaigns.last_viewed");
-
-  if (lastViewedCampaignId) {
-    return <Navigate to={`/campaigns/${lastViewedCampaignId}`} replace={true} />
-  }
-
-  return (
-    <AuthGuard>
-      <Page>
-        {!lastViewedCampaignId &&
-          <div>
-            <Typography variant="body2">
-              Welcome to campaigneon! Select an existing campaign or create a new one to get started.
-            </Typography>
-          </div>}
-      </Page>
-    </AuthGuard>
   );
 };
 
