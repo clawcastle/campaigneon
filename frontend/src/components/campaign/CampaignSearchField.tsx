@@ -1,17 +1,11 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { CampaignContext } from "../../context/CampaignContext";
+import { useNavigate } from "react-router-dom";
 
 export const CampaignSearchField = () => {
-  const { campaignItemsMetadata } = useContext(CampaignContext);
-
-  const searchTerms = useMemo(() => {
-    if (!campaignItemsMetadata) {
-      return [];
-    }
-
-    return campaignItemsMetadata.map((c) => c.title);
-  }, [campaignItemsMetadata]);
+  const { campaignItemsMetadata: searchOptions, campaign } = useContext(CampaignContext);
+  const navigate = useNavigate();
 
   return (
     <div
@@ -24,8 +18,15 @@ export const CampaignSearchField = () => {
     >
       <Autocomplete
         sx={{ width: 400 }}
+        onChange={(e, value) => {
+          if (!campaign?.id || !value?.id) return;
+
+          navigate(`/campaigns/${campaign.id}/${value.id}`)
+        }}
         disablePortal
-        options={searchTerms}
+        options={searchOptions ?? []}
+        getOptionLabel={(option) => option.title}
+        size="small"
         renderInput={(params) => <TextField {...params} label="Search" />}
       />
     </div>

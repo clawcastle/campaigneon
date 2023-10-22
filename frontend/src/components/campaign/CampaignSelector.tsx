@@ -46,7 +46,7 @@ export const CampaignSelector = () => {
         (c) => c.id === e.target.value
       );
       setSelectedCampaign(selectedCampaign);
-      navigate(`campaigns/${e.target.value}`);
+      navigate(`/campaigns/${e.target.value}`);
     }
   };
 
