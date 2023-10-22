@@ -18,7 +18,7 @@ export const CampaignSearchField = () => {
     >
       <Autocomplete
         sx={{ width: 400 }}
-        onChange={(e, value) => {
+        onChange={(_, value) => {
           if (!campaign?.id || !value?.id) return;
 
           navigate(`/campaigns/${campaign.id}/${value.id}`)

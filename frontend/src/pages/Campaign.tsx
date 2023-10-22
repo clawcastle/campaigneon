@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Page } from "./Page";
 import { Grid, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   CampaignContext,
   CampaignContextProvider,
@@ -33,6 +33,12 @@ const CampaignPageContent = () => {
 
 export const CampaignPage = () => {
   const { campaignId } = useParams();
+
+  useEffect(() => {
+    if (!campaignId) return;
+
+    localStorage.setItem("campaigns.last_viewed", campaignId);
+  }, [campaignId]);
 
   if (!campaignId) {
     return (
