@@ -4,7 +4,8 @@ import { CampaignContext } from "../../context/CampaignContext";
 import { useNavigate } from "react-router-dom";
 
 export const CampaignSearchField = () => {
-  const { campaignItemsMetadata: searchOptions, campaign } = useContext(CampaignContext);
+  const { campaignItemsMetadata: searchOptions, campaign } =
+    useContext(CampaignContext);
   const navigate = useNavigate();
 
   return (
@@ -21,7 +22,8 @@ export const CampaignSearchField = () => {
         onChange={(_, value) => {
           if (!campaign?.id || !value?.id) return;
 
-          navigate(`/campaigns/${campaign.id}/${value.id}`)
+          // TODO: Handle if selected item is category.
+          navigate(`/campaigns/${campaign.id}/entries/${value.id}`);
         }}
         disablePortal
         options={searchOptions ?? []}
