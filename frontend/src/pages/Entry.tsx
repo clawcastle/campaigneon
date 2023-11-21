@@ -1,10 +1,9 @@
-// import { useQuery } from "@apollo/client";
 import { useQuery } from "@apollo/client";
 import { gql } from "../__generated__";
 import { Page } from "./Page";
-import { Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
-// import { Page } from "./Page";
+import { EntryDescription } from "../components/entry/EntryDescription";
 
 const FETCH_ENTRY_QUERY = gql(`
     query FetchEntry($entryId: UUID!) {
@@ -43,7 +42,16 @@ export const EntryPage = () => {
             <Typography variant="h5">An error occurred</Typography>
           </Grid>
         )}
-        {data && <Grid item xs={12}></Grid>}
+        {data && (
+          <>
+            <Grid item xs={12}>
+              <Box mt={2} />
+            </Grid>
+            <Grid item xs={8}>
+              <EntryDescription readonly={false} entry={data.entry} />
+            </Grid>
+          </>
+        )}
       </Grid>
     </Page>
   );

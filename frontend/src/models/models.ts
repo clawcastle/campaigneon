@@ -9,6 +9,19 @@ export interface EntryMetadata {
   categoryId: string | null | undefined;
 }
 
+// export interface Entry {
+//   id: string;
+//   campaignId: string;
+//   title: string;
+//   createdAt: string;
+//   createdBy: string;
+//   lastModifiedAt: string;
+//   lastModifiedBy: string;
+//   categoryId: string | null | undefined;
+//   entryTextRich: string;
+//   entryTextRaw: string;
+// }
+
 export interface Category {
   id: string;
   campaignId: string;

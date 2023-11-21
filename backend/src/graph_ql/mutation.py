@@ -95,13 +95,13 @@ class Mutation:
         user_id = info.context.user.user_id
 
         update_model = UpdateEntryModel(
-            entry_id,
-            title,
-            entry_text_rich,
-            entry_text_raw,
-            now,
-            user_id,
-            entry_text_summary,
+            entry_id=entry_id,
+            title=title,
+            entry_text_rich=entry_text_rich,
+            entry_text_raw=entry_text_raw,
+            modified_at=now,
+            modified_by=user_id,
+            entry_text_summary=entry_text_summary,
         )
 
         updated_entry = await EntryRepository.update_entry(update_model)

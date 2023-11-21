@@ -21,7 +21,7 @@ class UpdateEntryModel:
         self.entry_text_rich = entry_text_rich
         self.entry_text_raw = entry_text_raw
         self.modified_at = modified_at
-        self.modified_by: modified_by
+        self.modified_by = modified_by
         self.entry_text_summary = entry_text_summary
 
 
