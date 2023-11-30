@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Entry } from "../../__generated__/graphql";
@@ -33,7 +33,7 @@ export const EntryDescription = ({
   readonly,
   entry,
 }: EntryDescriptionProps) => {
-  const [editorState, setEditorState] = useState(entry.entryTextRich);
+  const [entryTextRich, setEntryTextRich] = useState(entry.entryTextRich);
   const editorRef = useRef<ReactQuill | null>(null);
 
   const [updateEntryMutationFn] = useMutation(UPDATE_ENTRY_MUTATION);
@@ -50,7 +50,7 @@ export const EntryDescription = ({
         entryId: entry.id,
         title: entry.title,
         entryTextRaw: entryTextRaw,
-        entryTextRich: editorState,
+        entryTextRich: entryTextRich,
         entryTextSummary: null,
       },
     });
@@ -60,8 +60,8 @@ export const EntryDescription = ({
     <div>
       <ReactQuill
         theme="snow"
-        value={editorState}
-        onChange={setEditorState}
+        value={entryTextRich}
+        onChange={setEntryTextRich}
         style={{ height: 600 }}
         readOnly={readonly}
         ref={editorRef}
