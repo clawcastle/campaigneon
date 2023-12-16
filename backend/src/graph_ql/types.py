@@ -47,3 +47,9 @@ class EntryMetadata:
     created_by: str
     last_modified_by: str
     category_id: Optional[str]
+
+
+@strawberry.type
+class ImageUploadData:
+    campaign_id: UUID
+    url: str
