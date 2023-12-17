@@ -5,6 +5,7 @@ import { Entry } from "../../__generated__/graphql";
 import { Button } from "@mui/material";
 import { gql } from "../../__generated__";
 import { useMutation } from "@apollo/client";
+import { enqueueSnackbar } from "notistack";
 
 const UPDATE_ENTRY_MUTATION = gql(`
     mutation UpdateEntry($entryId: UUID!, $title: String!, $entryTextRich: String!, $entryTextRaw: String!, $entryTextSummary: String) {
@@ -45,15 +46,21 @@ export const EntryDescription = ({
 
     const entryTextRaw = editor.getText();
 
-    await updateEntryMutationFn({
-      variables: {
-        entryId: entry.id,
-        title: entry.title,
-        entryTextRaw: entryTextRaw,
-        entryTextRich: entryTextRich,
-        entryTextSummary: null,
-      },
-    });
+    try {
+      await updateEntryMutationFn({
+        variables: {
+          entryId: entry.id,
+          title: entry.title,
+          entryTextRaw: entryTextRaw,
+          entryTextRich: entryTextRich,
+          entryTextSummary: null,
+        },
+      });
+
+      enqueueSnackbar("Changes saved successfully.", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar("An error occurred.", { variant: "error" });
+    }
   };
 
   return (

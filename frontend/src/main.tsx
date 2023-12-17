@@ -4,6 +4,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { routes } from "./routes/routes.tsx";
 import { GraphQlClientProvider } from "./GraphQlClientProvider.tsx";
+import { SnackbarProvider } from "notistack";
 
 const router = createBrowserRouter(routes);
 
@@ -22,7 +23,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       useRefreshTokensFallback={true}
     >
       <GraphQlClientProvider>
-        <RouterProvider router={router} />
+        <SnackbarProvider>
+          <RouterProvider router={router} />
+        </SnackbarProvider>
       </GraphQlClientProvider>
     </Auth0Provider>
   </React.StrictMode>
