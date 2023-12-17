@@ -1,7 +1,7 @@
 import jwt
 import os
 
-from auth.user import AuthenticatedUser
+from backend.auth.user import AuthenticatedUser
 
 
 class TokenVerifier:

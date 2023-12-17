@@ -2,14 +2,14 @@ from typing import Optional
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
-from db.campaign_repository import CampaignRepository, UpdateCampaignModel
-from db.category_repository import CategoryRepository
-from db.entry_repository import EntryRepository, UpdateEntryModel
-from graph_ql.context import Context
+from backend.db.campaign_repository import CampaignRepository, UpdateCampaignModel
+from backend.db.category_repository import CategoryRepository
+from backend.db.entry_repository import EntryRepository, UpdateEntryModel
+from backend.graph_ql.context import Context
 
 from datetime import datetime
 from uuid import uuid4, UUID
-from graph_ql.types import Campaign, Category, Entry
+from backend.graph_ql.types import Campaign, Category, Entry
 import db.models
 
 Info = _Info[Context, RootValueType]

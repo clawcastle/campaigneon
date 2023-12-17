@@ -1,6 +1,6 @@
 from uuid import UUID
-from db.models import Campaign
-from db.connection_pool import connection_pool
+from backend.db.models import Campaign
+from backend.db.connection_pool import connection_pool
 from typing import List
 
 class UpdateCampaignModel:

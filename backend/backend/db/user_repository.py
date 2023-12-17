@@ -1,5 +1,5 @@
-from db.models import User
-from db.connection_pool import connection_pool
+from backend.db.models import User
+from backend.db.connection_pool import connection_pool
 from typing import List
 
 class UserRepository:

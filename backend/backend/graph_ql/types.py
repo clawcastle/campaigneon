@@ -48,8 +48,16 @@ class EntryMetadata:
     last_modified_by: str
     category_id: Optional[str]
 
+@strawberry.type
+class PresignedUploadUrlFields:
+    key: str
+    policy: str
+    date: str
+    credential: str
+    signature: str
+    algorithm: str
 
 @strawberry.type
-class ImageUploadData:
-    campaign_id: UUID
+class PresignedUploadUrl:
     url: str
+    fields: PresignedUploadUrlFields

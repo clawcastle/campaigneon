@@ -1,5 +1,5 @@
-from db.models import Category
-from db.connection_pool import connection_pool
+from backend.db.models import Category
+from backend.db.connection_pool import connection_pool
 from typing import List
 from uuid import UUID
 

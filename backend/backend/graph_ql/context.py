@@ -3,8 +3,8 @@ from typing import Optional
 
 from strawberry.fastapi import BaseContext
 
-from auth.token_verifier import TokenVerifier
-from auth.user import AuthenticatedUser
+from backend.auth.token_verifier import TokenVerifier
+from backend.auth.user import AuthenticatedUser
 
 
 class Context(BaseContext):

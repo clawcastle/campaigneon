@@ -1,6 +1,6 @@
 from typing import List, Optional
-from db.models import Entry, EntryMetadata
-from db.connection_pool import connection_pool
+from backend.db.models import Entry, EntryMetadata
+from backend.db.connection_pool import connection_pool
 from uuid import UUID
 from datetime import datetime
 
