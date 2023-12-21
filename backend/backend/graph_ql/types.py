@@ -48,6 +48,7 @@ class EntryMetadata:
     last_modified_by: str
     category_id: Optional[str]
 
+
 @strawberry.type
 class PresignedUploadUrlFields:
     key: str
@@ -57,7 +58,13 @@ class PresignedUploadUrlFields:
     signature: str
     algorithm: str
 
+
 @strawberry.type
 class PresignedUploadUrl:
     url: str
     fields: PresignedUploadUrlFields
+
+
+@strawberry.type
+class JobIdentifier:
+    value: UUID

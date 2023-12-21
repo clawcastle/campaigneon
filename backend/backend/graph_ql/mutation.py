@@ -2,6 +2,9 @@ from typing import Optional
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
+from backend.backend.jobs.generate_image_job import GenerateImageForEntryJobFactory
+from backend.backend.llm.llm_service import LlmService
+from backend.backend.media.image_repository import ImageRepository
 from backend.db.campaign_repository import CampaignRepository, UpdateCampaignModel
 from backend.db.category_repository import CategoryRepository
 from backend.db.entry_repository import EntryRepository, UpdateEntryModel
@@ -9,7 +12,7 @@ from backend.graph_ql.context import Context
 
 from datetime import datetime
 from uuid import uuid4, UUID
-from backend.graph_ql.types import Campaign, Category, Entry
+from backend.graph_ql.types import Campaign, Category, Entry, JobIdentifier
 import db.models
 
 Info = _Info[Context, RootValueType]
@@ -107,3 +110,19 @@ class Mutation:
         updated_entry = await EntryRepository.update_entry(update_model)
 
         return updated_entry
+
+    @strawberry.mutation
+    async def generate_image_for_entry(
+        self, campaign_id: UUID, entry_id: UUID, info: Info
+    ) -> UUID:
+        job_factory = GenerateImageForEntryJobFactory(
+            llm_service=LlmService(), image_repository=ImageRepository()
+        )  # TODO: setup dependency injection
+
+        generate_image_job = job_factory.create(
+            campaign_id=campaign_id, entry_id=entry_id
+        )
+
+        info.context.background_tasks.add_task(generate_image_job.execute)
+
+        return JobIdentifier(value=generate_image_job.job_identifier)

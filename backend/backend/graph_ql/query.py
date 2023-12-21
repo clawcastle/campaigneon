@@ -8,11 +8,18 @@ from backend.db.campaign_repository import CampaignRepository
 from backend.db.category_repository import CategoryRepository
 from backend.db.entry_repository import EntryRepository
 from backend.graph_ql.context import Context
-from backend.graph_ql.types import Campaign, Category, Entry, EntryMetadata, PresignedUploadUrl
+from backend.graph_ql.types import (
+    Campaign,
+    Category,
+    Entry,
+    EntryMetadata,
+    PresignedUploadUrl,
+)
 
 Info = _Info[Context, RootValueType]
 
 # TODO: Map from db models to types defined in graph_ql types module.
+
 
 @strawberry.type
 class Query:
@@ -44,12 +51,10 @@ class Query:
 
     @strawberry.field
     async def image_upload_url(self, campaign_id: UUID) -> PresignedUploadUrl:
-        image_repository = ImageRepository() # TODO: Set up dependency injection for repositories
+        image_repository = (
+            ImageRepository()
+        )  # TODO: Set up dependency injection for repositories
 
-        presigned_upload_url = image_repository.get_presigned_upload_url(
-            bucket_name="campaigneon-dev", expires_in_seconds=300
-        )
-
-        print(presigned_upload_url)
+        presigned_upload_url = image_repository.get_presigned_upload_url()
 
         return presigned_upload_url
