@@ -1,4 +1,6 @@
 from uuid import UUID, uuid4
+
+import requests
 from backend.backend.db.entry_repository import EntryRepository
 from backend.backend.llm.llm_service import LlmService
 from backend.backend.media.image_repository import ImageRepository
@@ -19,8 +21,32 @@ class GenerateImageForEntryJob:
         self.image_repository = image_repository
 
     # Returns a job identifier
-    def execute(self) -> UUID:
-        pass
+    async def execute(self) -> None:
+        # save status of job to db as "in progress"
+        # generate prompt
+        # generate image
+        # upload image
+        # update job status to "completed", add metadata about uploaded image to couple the two
+
+        # TODO: Add way of saving job status
+
+        entry = await EntryRepository.get_entry(entry_id=self.entry_id)
+
+        # TODO: Generate prompt from entry description
+
+        generate_image_response = self.llm_service.generate_image(prompt="TODO")
+
+        image_data_response = requests.get(generate_image_response.url)
+
+        image_data = image_data_response.content
+
+        file_name = str(uuid4())
+        self.image_repository.save_image(
+            campaign_id=self.campaign_id,
+            entry_id=self.entry_id,
+            file_name=file_name,
+            image_data=image_data,
+        )
 
 
 class GenerateImageForEntryJobFactory:
