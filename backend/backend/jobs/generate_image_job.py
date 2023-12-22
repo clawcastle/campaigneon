@@ -1,7 +1,15 @@
+from datetime import datetime
 from uuid import UUID, uuid4
 
 import requests
 from backend.backend.db.entry_repository import EntryRepository
+from backend.backend.db.job_repository import (
+    Job,
+    JobRepository,
+    JobStatus,
+    JobType,
+    UpdateJobModel,
+)
 from backend.backend.llm.llm_service import LlmService
 from backend.backend.media.image_repository import ImageRepository
 
@@ -26,26 +34,62 @@ class GenerateImageForEntryJob:
         # generate prompt
         # generate image
         # upload image
-        # update job status to "completed", add metadata about uploaded image to couple the two
+        # update job status to "completed", add metadata about uploaded image
 
-        # TODO: Add way of saving job status
+        job_model = self.to_db_model()
+        await JobRepository.create_job(job_model)
 
-        entry = await EntryRepository.get_entry(entry_id=self.entry_id)
+        try:
+            entry = await EntryRepository.get_entry(entry_id=self.entry_id)
 
-        # TODO: Generate prompt from entry description
+            prompt = "TODO"  # TODO: Generate prompt from entry description
 
-        generate_image_response = self.llm_service.generate_image(prompt="TODO")
+            generate_image_response = self.llm_service.generate_image(prompt=prompt)
 
-        image_data_response = requests.get(generate_image_response.url)
+            image_data_response = requests.get(generate_image_response.url)
 
-        image_data = image_data_response.content
+            image_data = image_data_response.content
 
-        file_name = str(uuid4())
-        self.image_repository.save_image(
-            campaign_id=self.campaign_id,
-            entry_id=self.entry_id,
-            file_name=file_name,
-            image_data=image_data,
+            file_name = str(uuid4())
+
+            self.image_repository.save_image(
+                campaign_id=self.campaign_id,
+                entry_id=self.entry_id,
+                file_name=file_name,
+                image_data=image_data,
+            )
+
+            job_model.metadata["file_name"] = file_name
+            job_model.metadata["prompt"] = prompt
+
+            update_job_model = UpdateJobModel(
+                job_id=self.job_identifier,
+                job_status=JobStatus.COMPLETED,
+                metadata=job_model.metadata,
+            )
+
+            await JobRepository.update_job(update_model=update_job_model)
+
+        except Exception as e:
+            job_model.metadata["error"] = str(e)
+
+            update_job_model = UpdateJobModel(
+                job_id=self.job_identifier,
+                job_status=JobStatus.ERROR,
+                metadata=job_model.metadata,
+            )
+
+            await JobRepository.update_job(update_model=update_job_model)
+
+    def to_db_model(self) -> Job:
+        metadata = {"campaign_id": self.campaign_id, "entry_id": self.entry_id}
+
+        return Job(
+            self.job_identifier,
+            JobType.GENERATE_IMAGE,
+            JobStatus.IN_PROGRESS,
+            datetime.now(),
+            metadata,
         )
 
 

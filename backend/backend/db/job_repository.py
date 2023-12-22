@@ -32,6 +32,15 @@ class Job:
         self.metadata = metadata
 
 
+class UpdateJobModel:
+    def __init__(
+        self, job_id: UUID, job_status: JobStatus, metadata: Dict[str, Any]
+    ) -> None:
+        self.job_id = job_id
+        self.job_status = job_status
+        self.metadata = metadata
+
+
 class JobRepository:
     @staticmethod
     async def create_job(job: Job) -> Job:
@@ -51,3 +60,19 @@ class JobRepository:
             )
 
         return job
+
+    @staticmethod
+    async def update_job(update_model: UpdateJobModel) -> Job:
+        metadata_json = json.dumps(update_model.metadata)
+
+        async with await connection_pool.acquire() as conn:
+            await conn.execute(
+                """
+                UPDATE jobs
+                SET job_status = $1, metadata = $2
+                WHERE id = $3
+                """,
+                update_model.job_status,
+                metadata_json,
+                update_model.job_id,
+            )
