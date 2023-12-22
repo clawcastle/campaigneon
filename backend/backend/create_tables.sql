@@ -57,3 +57,13 @@ CREATE TABLE IF NOT EXISTS public.entries
     CONSTRAINT last_modified_by_fk FOREIGN KEY (last_modified_by) REFERENCES public.users(id),
     CONSTRAINT category_id_fk FOREIGN KEY (category_id) REFERENCES public.categories(id)
 );
+
+CREATE TABLE IF NOT EXISTS public.jobs
+(
+    id uuid NOT NULL,
+    job_type text NOT NULL,
+    job_status text NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    metadata json,
+    CONSTRAINT jobs_pkey PRIMARY KEY (id)
+)
