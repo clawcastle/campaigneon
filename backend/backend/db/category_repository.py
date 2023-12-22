@@ -5,6 +5,7 @@ from uuid import UUID
 
 
 class CategoryRepository:
+    @staticmethod
     async def create_category(category: Category) -> Category:
         async with await connection_pool.acquire() as conn:
             await conn.execute(
@@ -21,6 +22,7 @@ class CategoryRepository:
 
             return category
 
+    @staticmethod
     async def get_categories(campaign_id: UUID) -> List[Category]:
         async with await connection_pool.acquire() as conn:
             results = await conn.fetch(
@@ -29,7 +31,7 @@ class CategoryRepository:
                 FROM categories
                 WHERE campaign_id = $1
                 """,
-                campaign_id
+                campaign_id,
             )
 
             return [

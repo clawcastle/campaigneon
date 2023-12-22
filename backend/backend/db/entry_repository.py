@@ -26,6 +26,7 @@ class UpdateEntryModel:
 
 
 class EntryRepository:
+    @staticmethod
     async def create_entry(entry: Entry) -> Entry:
         async with await connection_pool.acquire() as conn:
             await conn.execute(
@@ -50,6 +51,7 @@ class EntryRepository:
 
             return entry
 
+    @staticmethod
     async def get_entry(entry_id: UUID) -> Entry:
         async with await connection_pool.acquire() as conn:
             result = await conn.fetchrow(
@@ -82,6 +84,7 @@ class EntryRepository:
 
             return entry
 
+    @staticmethod
     async def get_entries_metadata(campaign_id: UUID) -> List[EntryMetadata]:
         async with await connection_pool.acquire() as conn:
             results = await conn.fetch(
@@ -110,6 +113,7 @@ class EntryRepository:
 
             return entries_metadata
 
+    @staticmethod
     async def update_entry(update_model: UpdateEntryModel) -> Entry:
         async with await connection_pool.acquire() as conn:
             result = await conn.fetchrow(

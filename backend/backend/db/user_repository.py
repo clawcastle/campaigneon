@@ -2,7 +2,9 @@ from backend.db.models import User
 from backend.db.connection_pool import connection_pool
 from typing import List
 
+
 class UserRepository:
+    @staticmethod
     async def create_user(user: User) -> User:
         async with await connection_pool.acquire() as conn:
             await conn.execute(
@@ -13,7 +15,7 @@ class UserRepository:
                 user.id,
                 user.email,
                 user.created_at,
-                user.display_name
+                user.display_name,
             )
 
             return user
