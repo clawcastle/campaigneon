@@ -7,6 +7,7 @@ import {
   CampaignContextProvider,
 } from "../context/CampaignContext";
 import { CampaignSearchField } from "../components/campaign/CampaignSearchField";
+import { CreateEntryButton } from "../components/entry/CreateEntryButton";
 
 const CampaignPageContent = () => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
@@ -36,6 +37,7 @@ const CampaignPageContent = () => {
           </Grid>
         </Grid>
       )}
+      <CreateEntryButton />
     </Page>
   );
 };
