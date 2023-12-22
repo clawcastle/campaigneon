@@ -2,9 +2,9 @@ from typing import Optional
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
-from backend.backend.jobs.generate_image_job import GenerateImageForEntryJobFactory
-from backend.backend.llm.llm_service import LlmService
-from backend.backend.media.image_repository import ImageRepository
+from backend.jobs.generate_image_job import GenerateImageForEntryJobFactory
+from backend.llm.llm_service import LlmService
+from backend.media.image_repository import ImageRepository
 from backend.db.campaign_repository import CampaignRepository, UpdateCampaignModel
 from backend.db.category_repository import CategoryRepository
 from backend.db.entry_repository import EntryRepository, UpdateEntryModel

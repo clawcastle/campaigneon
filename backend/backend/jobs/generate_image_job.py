@@ -2,16 +2,16 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import requests
-from backend.backend.db.entry_repository import EntryRepository
-from backend.backend.db.job_repository import (
+from backend.db.entry_repository import EntryRepository
+from backend.db.job_repository import (
     Job,
     JobRepository,
     JobStatus,
     JobType,
     UpdateJobModel,
 )
-from backend.backend.llm.llm_service import LlmService
-from backend.backend.media.image_repository import ImageRepository
+from backend.llm.llm_service import LlmService
+from backend.media.image_repository import ImageRepository
 
 
 class GenerateImageForEntryJob:

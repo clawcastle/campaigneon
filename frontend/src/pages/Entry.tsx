@@ -4,6 +4,7 @@ import { Page } from "./Page";
 import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { EntryDescription } from "../components/entry/EntryDescription";
+import { EntryImage } from "../components/entry/EntryImage";
 
 const FETCH_ENTRY_QUERY = gql(`
     query FetchEntry($entryId: UUID!) {
@@ -49,6 +50,9 @@ export const EntryPage = () => {
             </Grid>
             <Grid item xs={8}>
               <EntryDescription readonly={false} entry={data.entry} />
+            </Grid>
+            <Grid item xs={4}>
+              <EntryImage entry={data.entry} />
             </Grid>
           </>
         )}

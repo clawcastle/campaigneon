@@ -3,7 +3,7 @@ from uuid import UUID
 from enum import Enum
 import json
 from typing import Dict, Any
-from backend.backend.db.connection_pool import connection_pool
+from backend.db.connection_pool import connection_pool
 
 
 class JobType(Enum):
