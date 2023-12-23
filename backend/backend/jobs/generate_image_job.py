@@ -50,16 +50,16 @@ class GenerateImageForEntryJob:
 
             image_data = image_data_response.content
 
-            file_name = str(uuid4())
+            image_id = uuid4()
 
             self.image_repository.save_image(
                 campaign_id=self.campaign_id,
                 entry_id=self.entry_id,
-                file_name=file_name,
+                image_id=image_id,
                 image_data=image_data,
             )
 
-            job_model.metadata["file_name"] = file_name
+            job_model.metadata["image_id"] = image_id
             job_model.metadata["prompt"] = prompt
 
             update_job_model = UpdateJobModel(

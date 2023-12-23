@@ -66,4 +66,22 @@ CREATE TABLE IF NOT EXISTS public.jobs
     created_at timestamp without time zone NOT NULL,
     metadata json,
     CONSTRAINT jobs_pkey PRIMARY KEY (id)
-)
+);
+
+CREATE TABLE IF NOT EXISTS public.images
+(
+    id uuid NOT NULL,
+    campaign_id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    file_name text NOT NULL,
+    CONSTRAINT images_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public.entry_images
+(
+    entry_id uuid NOT NULL,
+    image_id uuid NOT NULL,
+    CONSTRAINT entry_images_pk PRIMARY KEY (entry_id, image_id),
+    CONSTRAINT entry_id_fk FOREIGN KEY (entry_id) REFERENCES public.entries (id),
+    CONSTRAINT image_id_fk FOREIGN KEY (image_id) REFERENCES public.images (id)
+);

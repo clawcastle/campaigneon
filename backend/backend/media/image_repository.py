@@ -1,6 +1,9 @@
+from datetime import datetime
 import boto3
-from uuid import uuid4
+from uuid import uuid4, UUID
 import os
+
+from backend.db.connection_pool import connection_pool
 
 
 class PresignedUploadUrlFields:
@@ -46,16 +49,40 @@ class ImageRepository:
             region_name="weur",
         )
 
-    def save_image(
-        self, campaign_id: str, entry_id: str, file_name: str, image_data: bytes
+    async def save_image(
+        self, campaign_id: str, entry_id: str, image_id: UUID, image_data: bytes
     ) -> str:
-        full_file_name = f"{campaign_id}/{entry_id}/{file_name}"
+        file_name = f"{campaign_id}/{entry_id}/{image_id}"
 
-        response = self.__s3_client.upload_file(
-            full_file_name, self.__bucket_name, file_name
+        response = self.__s3_client.put_object(
+            Body=image_data,
+            Bucket=self.__bucket_name,
+            Key=file_name,
+            ContentType="image/jpg",
         )
 
-        return full_file_name
+        async with await connection_pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute(
+                    """
+                    INSERT INTO public.images (id, campaign_id, created_at)
+                    VALUES ($1, $2, $3)
+                    """,
+                    image_id,
+                    campaign_id,
+                    datetime.now(),
+                )
+
+                await conn.execute(
+                    """
+                    INSERT INTO entry_images (entry_id, image_id)
+                    VALUES ($1, $2)
+                    """,
+                    entry_id,
+                    image_id,
+                )
+
+        return file_name
 
     def get_presigned_upload_url(self) -> PresignedUploadUrl:
         object_name = str(uuid4())

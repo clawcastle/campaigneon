@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import { gql } from "../../__generated__";
 import { useMutation } from "@apollo/client";
 import { CampaignContext } from "../../context/CampaignContext";
@@ -57,10 +57,11 @@ export const CreateEntryDialog = ({ open, onClose }: CreateEntryDialogProps) => 
         </DialogTitle>
         <DialogContent>
             <TextField value={entryTitle} onChange={onEntryTitleChange} />
+            {!!error && <Typography variant="body2">An error occurred.</Typography>}
         </DialogContent>
         <DialogActions>
             <Button variant="contained" color="secondary" onClick={onDialogClosed}>Cancel</Button>
             <Button variant="contained" color="primary" onClick={onCreateClicked} disabled={loading}>Create</Button>
         </DialogActions>
-    </Dialog >)
+    </Dialog>)
 }
