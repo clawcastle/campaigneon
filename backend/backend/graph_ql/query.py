@@ -12,6 +12,7 @@ from backend.graph_ql.types import (
     Campaign,
     Category,
     Entry,
+    EntryImage,
     EntryMetadata,
     PresignedUploadUrl,
 )
@@ -48,6 +49,10 @@ class Query:
         entries_metadata = await EntryRepository.get_entries_metadata(campaign_id)
 
         return entries_metadata
+
+    @strawberry.field
+    async def entry_images(self, campaign_id: UUID, entry_id: UUID) -> List[EntryImage]:
+        return []
 
     @strawberry.field
     async def image_upload_url(self, campaign_id: UUID) -> PresignedUploadUrl:

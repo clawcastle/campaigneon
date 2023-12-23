@@ -6,11 +6,11 @@ from typing import Dict, Any
 from backend.db.connection_pool import connection_pool
 
 
-class JobType(Enum):
+class JobType(str, Enum):
     GENERATE_IMAGE = "GENERATE_IMAGE"
 
 
-class JobStatus(Enum):
+class JobStatus(str, Enum):
     IN_PROGRESS = "IN_PROGRESS"
     COMPLETED = "COMPLETED"
     ERROR = "ERROR"

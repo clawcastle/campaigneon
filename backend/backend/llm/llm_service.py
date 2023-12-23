@@ -1,3 +1,4 @@
+import json
 import os
 import requests
 
@@ -13,12 +14,15 @@ class LlmService:
         self.__api_key = os.environ.get("OPENAI_API_KEY")
 
     def generate_image(self, prompt: str) -> GenerateImageResponse:
-        request_body = {
-            "model": "dall-e-3",
-            "prompt": prompt,
-            "n": 1,
-            "size": "1024x1024",
-        }
+        request_body = json.dumps(
+            {
+                "model": "dall-e-3",
+                "prompt": prompt,
+                "n": 1,
+                "size": "1024x1024",
+            }
+        )
+
         response = requests.post(
             url="https://api.openai.com/v1/images/generations",
             data=request_body,
@@ -27,6 +31,12 @@ class LlmService:
                 "Authorization": f"Bearer {self.__api_key}",
             },
         )
+
+        if response.status_code < 200 or response.status_code > 299:
+            if response.status_code == 429:
+                raise Exception("Rate limit exceeded.")
+            else:
+                raise Exception("Something went wrong while trying to generate image.")
 
         response_content = response.json()
 

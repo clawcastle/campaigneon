@@ -42,7 +42,7 @@ class GenerateImageForEntryJob:
         try:
             entry = await EntryRepository.get_entry(entry_id=self.entry_id)
 
-            prompt = "TODO"  # TODO: Generate prompt from entry description
+            prompt = "Big scary castle with green dragon on top, fantasy style realistic"  # TODO: Generate prompt from entry description
 
             generate_image_response = self.llm_service.generate_image(prompt=prompt)
 
@@ -59,7 +59,7 @@ class GenerateImageForEntryJob:
                 image_data=image_data,
             )
 
-            job_model.metadata["image_id"] = image_id
+            job_model.metadata["image_id"] = str(image_id)
             job_model.metadata["prompt"] = prompt
 
             update_job_model = UpdateJobModel(
@@ -82,7 +82,10 @@ class GenerateImageForEntryJob:
             await JobRepository.update_job(update_model=update_job_model)
 
     def to_db_model(self) -> Job:
-        metadata = {"campaign_id": self.campaign_id, "entry_id": self.entry_id}
+        metadata = {
+            "campaign_id": str(self.campaign_id),
+            "entry_id": str(self.entry_id),
+        }
 
         return Job(
             self.job_identifier,

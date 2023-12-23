@@ -68,3 +68,9 @@ class PresignedUploadUrl:
 @strawberry.type
 class JobIdentifier:
     value: UUID
+
+
+@strawberry.type
+class EntryImage:
+    url: str
+    created_at: datetime

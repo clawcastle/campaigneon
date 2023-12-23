@@ -114,7 +114,7 @@ class Mutation:
     @strawberry.mutation
     async def generate_image_for_entry(
         self, campaign_id: UUID, entry_id: UUID, info: Info
-    ) -> UUID:
+    ) -> JobIdentifier:
         job_factory = GenerateImageForEntryJobFactory(
             llm_service=LlmService(), image_repository=ImageRepository()
         )  # TODO: setup dependency injection
