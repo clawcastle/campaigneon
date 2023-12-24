@@ -65,12 +65,13 @@ class ImageRepository:
             async with conn.transaction():
                 await conn.execute(
                     """
-                    INSERT INTO public.images (id, campaign_id, created_at)
-                    VALUES ($1, $2, $3)
+                    INSERT INTO public.images (id, campaign_id, created_at, file_name)
+                    VALUES ($1, $2, $3, $4)
                     """,
                     image_id,
                     campaign_id,
                     datetime.now(),
+                    file_name,
                 )
 
                 await conn.execute(

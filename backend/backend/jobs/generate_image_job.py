@@ -52,7 +52,7 @@ class GenerateImageForEntryJob:
 
             image_id = uuid4()
 
-            self.image_repository.save_image(
+            await self.image_repository.save_image(
                 campaign_id=self.campaign_id,
                 entry_id=self.entry_id,
                 image_id=image_id,

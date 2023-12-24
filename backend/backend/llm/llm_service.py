@@ -16,7 +16,7 @@ class LlmService:
     def generate_image(self, prompt: str) -> GenerateImageResponse:
         request_body = json.dumps(
             {
-                "model": "dall-e-3",
+                "model": "dall-e-2",
                 "prompt": prompt,
                 "n": 1,
                 "size": "1024x1024",
