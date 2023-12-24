@@ -1,8 +1,9 @@
 from datetime import datetime
+from typing import List
 import boto3
 from uuid import uuid4, UUID
 import os
-
+from backend.db.models import EntryImage, EntryImageMetadata
 from backend.db.connection_pool import connection_pool
 
 
@@ -84,6 +85,47 @@ class ImageRepository:
                 )
 
         return file_name
+
+    async def get_entry_images(self, entry_id: UUID) -> List[EntryImage]:
+        image_metadata: List[EntryImageMetadata] = []
+
+        async with await connection_pool.acquire() as conn:
+            results = await conn.fetch(
+                """
+                SELECT id, campaign_id, created_at, file_name
+                FROM images
+                INNER JOIN entry_images ON "entry_id" = $1
+                """,
+                entry_id,
+            )
+
+            for result in results:
+                image_metadata.append(
+                    EntryImageMetadata(
+                        image_id=result[0],
+                        campaign_id=result[1],
+                        entry_id=entry_id,
+                        created_at=result[2],
+                        file_name=result[3],
+                    )
+                )
+
+        entry_images: List[EntryImage] = []
+
+        for metadata in image_metadata:
+            presigned_url = self.__s3_client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": self.__bucket_name, "Key": metadata.file_name},
+                ExpiresIn=60 * 60 * 24,
+            )
+
+            entry_images.append(
+                EntryImage(
+                    entry_id=entry_id, url=presigned_url, created_at=metadata.created_at
+                )
+            )
+
+        return entry_images
 
     def get_presigned_upload_url(self) -> PresignedUploadUrl:
         object_name = str(uuid4())

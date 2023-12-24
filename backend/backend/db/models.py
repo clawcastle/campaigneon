@@ -98,3 +98,26 @@ class Category:
         self.title = title
         self.created_at = created_at
         self.parent_id = parent_id
+
+
+class EntryImageMetadata:
+    def __init__(
+        self,
+        image_id: UUID,
+        campaign_id: UUID,
+        entry_id: UUID,
+        created_at: datetime,
+        file_name: str,
+    ) -> None:
+        self.image_id = image_id
+        self.campaign_id = campaign_id
+        self.entry_id = entry_id
+        self.created_at = created_at
+        self.file_name = file_name
+
+
+class EntryImage:
+    def __init__(self, entry_id: UUID, url: str, created_at: datetime) -> None:
+        self.entry_id = entry_id
+        self.url = url
+        self.created_at = created_at

@@ -46,7 +46,8 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
             return <Skeleton height={300} />;
         }
 
-        const hasImage = loading && !error && data && data.entryImages.length > 0;
+        const hasImage = !loading && !error && data && data.entryImages.length > 0;
+        console.log(hasImage);
 
         return (<>
             {hasImage && <CardMedia component="img" height={300} alt={entry.title} image={data.entryImages[0].url} />}

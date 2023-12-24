@@ -52,7 +52,18 @@ class Query:
 
     @strawberry.field
     async def entry_images(self, campaign_id: UUID, entry_id: UUID) -> List[EntryImage]:
-        return []
+        image_repository = (
+            ImageRepository()
+        )  # TODO: Set up dependency injection for repositories
+
+        entry_images = await image_repository.get_entry_images(entry_id=entry_id)
+
+        response = [
+            EntryImage(url=entry_image.url, created_at=entry_image.created_at)
+            for entry_image in entry_images
+        ]
+
+        return response
 
     @strawberry.field
     async def image_upload_url(self, campaign_id: UUID) -> PresignedUploadUrl:
