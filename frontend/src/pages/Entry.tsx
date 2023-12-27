@@ -33,12 +33,12 @@ export const EntryPage = () => {
   return (
     <Page requireAuthenticatedUser pageTitle={data?.entry.title ?? ""}>
       <Grid container spacing={2}>
-        {loading && (
+        {(loading || !data) && (
           <Grid item xs={12} textAlign="center" justifyContent="center">
             <Skeleton variant="rectangular" width={280} height={120} />
           </Grid>
         )}
-        {(error || !data) && (
+        {error && (
           <Grid item xs={12} textAlign="center" justifyContent="center">
             <Typography variant="h5">An error occurred</Typography>
           </Grid>

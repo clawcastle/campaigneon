@@ -1,8 +1,10 @@
 from typing import Optional
+from backend.db.job_repository import JobRepository
+from backend.jobs.background_job_scheduler import BackgroundJobScheduler
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
-from backend.jobs.generate_image_job import GenerateImageForEntryJobFactory
+from backend.jobs.generate_image_job import GenerateImageForEntryJob, GenerateImageForEntryJobFactory
 from backend.llm.llm_service import LlmService
 from backend.media.image_repository import ImageRepository
 from backend.db.campaign_repository import CampaignRepository, UpdateCampaignModel
@@ -12,8 +14,8 @@ from backend.graph_ql.context import Context
 
 from datetime import datetime
 from uuid import uuid4, UUID
-from backend.graph_ql.types import Campaign, Category, Entry, JobIdentifier
-import db.models
+from backend.graph_ql.types import Campaign, Category, Entry, Job, JobStatus
+import backend.db
 
 Info = _Info[Context, RootValueType]
 
@@ -24,7 +26,7 @@ class Mutation:
     async def create_campaign(self, title: str, info: Info) -> Campaign:
         user = info.context.user
 
-        campaign = db.models.Campaign(uuid4(), title, datetime.now(), user.user_id)
+        campaign = backend.db.models.Campaign(uuid4(), title, datetime.now(), user.user_id)
 
         created_campaign = await CampaignRepository.create_campaign(campaign)
 
@@ -42,7 +44,7 @@ class Mutation:
     async def create_category(
         self, campaign_id: UUID, title: str, parent_id: Optional[UUID] = None
     ) -> Category:
-        category = db.models.Category(
+        category = backend.db.models.Category(
             uuid4(),
             campaign_id=campaign_id,
             title=title,
@@ -66,7 +68,7 @@ class Mutation:
 
         now = datetime.now()
 
-        entry = db.models.Entry(
+        entry = backend.db.models.Entry(
             uuid4(),
             campaign_id,
             title,
@@ -114,15 +116,17 @@ class Mutation:
     @strawberry.mutation
     async def generate_image_for_entry(
         self, campaign_id: UUID, entry_id: UUID, info: Info
-    ) -> JobIdentifier:
+    ) -> Job:
         job_factory = GenerateImageForEntryJobFactory(
             llm_service=LlmService(), image_repository=ImageRepository()
         )  # TODO: setup dependency injection
+
+        background_job_scheduler = BackgroundJobScheduler(job_repository=JobRepository())
 
         generate_image_job = job_factory.create(
             campaign_id=campaign_id, entry_id=entry_id
         )
 
-        info.context.background_tasks.add_task(generate_image_job.execute)
+        await background_job_scheduler.schedule_job(job=generate_image_job, scheduler=info.context.background_tasks)
 
-        return JobIdentifier(value=generate_image_job.job_identifier)
+        return Job(id=generate_image_job.id, status=JobStatus.IN_PROGRESS)

@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from datetime import datetime
 from uuid import UUID
 from enum import Enum
@@ -30,6 +31,10 @@ class Job:
         self.job_status = job_status
         self.created_at = created_at
         self.metadata = metadata
+
+    @abstractmethod
+    async def execute(self) -> None:
+        pass
 
 
 class UpdateJobModel:

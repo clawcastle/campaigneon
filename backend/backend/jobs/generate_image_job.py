@@ -14,7 +14,7 @@ from backend.llm.llm_service import LlmService
 from backend.media.image_repository import ImageRepository
 
 
-class GenerateImageForEntryJob:
+class GenerateImageForEntryJob(Job):
     def __init__(
         self,
         llm_service: LlmService,
@@ -22,11 +22,18 @@ class GenerateImageForEntryJob:
         campaign_id: UUID,
         entry_id: UUID,
     ) -> None:
-        self.job_identifier = uuid4()
+        self.id = uuid4()
+        self.job_type = JobType.GENERATE_IMAGE
+        self.job_status = JobStatus.IN_PROGRESS
+        self.created_at = datetime.now()
         self.campaign_id = campaign_id
         self.entry_id = entry_id
         self.llm_service = llm_service
         self.image_repository = image_repository
+        self.metadata = {
+            "campaign_id": str(self.campaign_id),
+            "entry_id": str(self.entry_id),
+        }
 
     # Returns a job identifier
     async def execute(self) -> None:
@@ -35,9 +42,6 @@ class GenerateImageForEntryJob:
         # generate image
         # upload image
         # update job status to "completed", add metadata about uploaded image
-
-        job_model = self.to_db_model()
-        await JobRepository.create_job(job_model)
 
         try:
             entry = await EntryRepository.get_entry(entry_id=self.entry_id)
@@ -59,41 +63,27 @@ class GenerateImageForEntryJob:
                 image_data=image_data,
             )
 
-            job_model.metadata["image_id"] = str(image_id)
-            job_model.metadata["prompt"] = prompt
+            self.metadata["image_id"] = str(image_id)
+            self.metadata["prompt"] = prompt
 
             update_job_model = UpdateJobModel(
-                job_id=self.job_identifier,
+                job_id=self.id,
                 job_status=JobStatus.COMPLETED,
-                metadata=job_model.metadata,
+                metadata=self.metadata,
             )
 
             await JobRepository.update_job(update_model=update_job_model)
 
         except Exception as e:
-            job_model.metadata["error"] = str(e)
+            self.metadata["error"] = str(e)
 
             update_job_model = UpdateJobModel(
-                job_id=self.job_identifier,
+                job_id=self.id,
                 job_status=JobStatus.ERROR,
-                metadata=job_model.metadata,
+                metadata=self.metadata,
             )
 
             await JobRepository.update_job(update_model=update_job_model)
-
-    def to_db_model(self) -> Job:
-        metadata = {
-            "campaign_id": str(self.campaign_id),
-            "entry_id": str(self.entry_id),
-        }
-
-        return Job(
-            self.job_identifier,
-            JobType.GENERATE_IMAGE,
-            JobStatus.IN_PROGRESS,
-            datetime.now(),
-            metadata,
-        )
 
 
 class GenerateImageForEntryJobFactory:

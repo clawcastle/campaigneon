@@ -1,6 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
+from enum import Enum
 
 import strawberry
 
@@ -66,11 +67,17 @@ class PresignedUploadUrl:
 
 
 @strawberry.type
-class JobIdentifier:
-    value: UUID
-
-
-@strawberry.type
 class EntryImage:
     url: str
     created_at: datetime
+
+@strawberry.enum
+class JobStatus(Enum):
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    ERROR = "ERROR"
+
+@strawberry.type
+class Job:
+    id: UUID
+    status: JobStatus
