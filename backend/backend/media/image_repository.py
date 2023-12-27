@@ -94,7 +94,8 @@ class ImageRepository:
                 """
                 SELECT id, campaign_id, created_at, file_name
                 FROM images
-                INNER JOIN entry_images ON "entry_id" = $1
+                INNER JOIN entry_images ON images.id = entry_images.image_id
+                WHERE entry_images.entry_id = $1
                 """,
                 entry_id,
             )

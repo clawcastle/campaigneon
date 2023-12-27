@@ -8,9 +8,11 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import { Entry } from "../../__generated__/graphql";
+import { Entry, Job, JobStatus } from "../../__generated__/graphql";
 import { gql } from "../../__generated__";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useRef, useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
 const FETCH_ENTRY_IMAGES_QUERY = gql(`
     query FetchEntryImages($campaignId: UUID!, $entryId: UUID!) {
@@ -18,6 +20,15 @@ const FETCH_ENTRY_IMAGES_QUERY = gql(`
             url
             createdAt
         }
+    }
+`);
+
+const FETCH_JOB_QUERY = gql(`
+    query FetchJob($campaignId: UUID!, $jobId: UUID!) {
+      jobs(campaignId: $campaignId, jobId: $jobId) {
+        id
+        status
+      }
     }
 `);
 
@@ -35,29 +46,99 @@ type EntryImageProps = {
 };
 
 export const EntryImage = ({ entry }: EntryImageProps) => {
-  const { data, loading, error } = useQuery(FETCH_ENTRY_IMAGES_QUERY, {
+  const [generateImageJob, setGenerateImageJob] = useState<Job | undefined>();
+
+  const fetchGenerateImageJobIntervalHandle = useRef<
+    NodeJS.Timeout | undefined
+  >();
+
+  const {
+    data,
+    loading,
+    error,
+    refetch: refetchEntryImages,
+  } = useQuery(FETCH_ENTRY_IMAGES_QUERY, {
     variables: { campaignId: entry.campaignId, entryId: entry.id },
   });
 
-  const [generateEntryImageMutationFn, { loading: imageGenerationLoading }] =
-    useMutation(GENERATE_ENTRY_IMAGE_MUTATION, {
+  const [getImageGenerationJob] = useLazyQuery(FETCH_JOB_QUERY);
+
+  const [generateEntryImageMutationFn] = useMutation(
+    GENERATE_ENTRY_IMAGE_MUTATION,
+    {
       variables: {
         campaignId: entry.campaignId,
         entryId: entry.id,
       },
-    });
+    }
+  );
+
+  useEffect(() => {
+    if (!generateImageJob || generateImageJob.status == JobStatus.InProgress)
+      return;
+
+    if (generateImageJob.status === JobStatus.Completed) {
+      clearInterval(fetchGenerateImageJobIntervalHandle.current);
+
+      refetchEntryImages().then(() => {
+        enqueueSnackbar("Successfully generated image", {
+          variant: "success",
+        });
+      });
+    } else {
+      enqueueSnackbar("An error occurred while generating image.", {
+        variant: "error",
+      });
+    }
+
+    setGenerateImageJob(undefined);
+  }, [generateImageJob, refetchEntryImages]);
 
   const onGenerateImageClicked = async () => {
-    await generateEntryImageMutationFn();
+    const { data: responseData } = await generateEntryImageMutationFn();
+
+    if (!responseData?.generateImageForEntry) {
+      enqueueSnackbar("An error occurred while generating image.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    setGenerateImageJob(responseData.generateImageForEntry);
+
+    fetchGenerateImageJobIntervalHandle.current = setInterval(async () => {
+      const { data: response, error: responseError } =
+        await getImageGenerationJob({
+          variables: {
+            campaignId: entry.campaignId,
+            jobId: responseData.generateImageForEntry.id,
+          },
+          fetchPolicy: "network-only",
+        });
+
+      if (responseError) {
+        enqueueSnackbar("An error occurred while generating image.", {
+          variant: "error",
+        });
+
+        clearInterval(fetchGenerateImageJobIntervalHandle.current);
+      }
+
+      if (response?.jobs) {
+        setGenerateImageJob(response.jobs);
+      }
+    }, 1500);
   };
 
   const renderCardContent = () => {
-    if (loading || imageGenerationLoading) {
+    if (
+      loading ||
+      (generateImageJob && generateImageJob.status === JobStatus.InProgress)
+    ) {
       return <Skeleton height={300} />;
     }
 
     const hasImage = !loading && !error && data && data.entryImages.length > 0;
-    console.log(hasImage);
 
     return (
       <>

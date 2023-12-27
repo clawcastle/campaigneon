@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
+from backend.db.job_repository import JobRepository
 import strawberry
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
@@ -14,8 +15,11 @@ from backend.graph_ql.types import (
     Entry,
     EntryImage,
     EntryMetadata,
+    Job,
+    JobStatus,
     PresignedUploadUrl,
 )
+from backend.db.job_repository import JobStatus as DbJobStatus
 
 Info = _Info[Context, RootValueType]
 
@@ -74,3 +78,21 @@ class Query:
         presigned_upload_url = image_repository.get_presigned_upload_url()
 
         return presigned_upload_url
+    
+    @strawberry.field
+    async def jobs(self, campaign_id: UUID, job_id: UUID) -> Optional[Job]:
+        job = await JobRepository.get_job(job_id=job_id)
+
+        if job is None:
+            return None
+        
+        job_status = None
+
+        if job.job_status == DbJobStatus.IN_PROGRESS:
+            job_status = JobStatus.IN_PROGRESS
+        elif job.job_status == DbJobStatus.COMPLETED:
+            job_status = JobStatus.COMPLETED
+        else:
+            job_status = JobStatus.ERROR
+        
+        return Job(id=job.id, status=job_status)

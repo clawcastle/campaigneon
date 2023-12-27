@@ -1,14 +1,23 @@
+from __future__ import annotations
+
 from abc import abstractmethod
 from datetime import datetime
 from uuid import UUID
 from enum import Enum
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from backend.db.connection_pool import connection_pool
 
 
 class JobType(str, Enum):
     GENERATE_IMAGE = "GENERATE_IMAGE"
+
+    @staticmethod
+    def from_str(s: str) -> JobType:
+        if s == "GENERATE_IMAGE":
+            return JobType.GENERATE_IMAGE
+        else:
+            raise Exception(f"Invalid string value for JobType: {s}")
 
 
 class JobStatus(str, Enum):
@@ -16,6 +25,16 @@ class JobStatus(str, Enum):
     COMPLETED = "COMPLETED"
     ERROR = "ERROR"
 
+    @staticmethod
+    def from_str(s: str) -> JobStatus:
+        if s == "IN_PROGRESS":
+            return JobStatus.IN_PROGRESS
+        elif s == "COMPLETED":
+            return JobStatus.COMPLETED
+        elif s == "ERROR":
+            return JobStatus.ERROR
+        else:
+            raise Exception(f"Invalid string value for JobStatus: {s}")
 
 class Job:
     def __init__(
@@ -81,3 +100,26 @@ class JobRepository:
                 metadata_json,
                 update_model.job_id,
             )
+
+    @staticmethod
+    async def get_job(job_id: UUID) -> Optional[Job]:
+        async with await connection_pool.acquire() as conn:
+            result = await conn.fetchrow(
+                """
+                SELECT id, job_type, job_status, created_at, metadata
+                FROM jobs
+                WHERE id = $1
+                """,
+                job_id
+            )
+
+            if result is None:
+                return None
+            
+            job_type = JobType.from_str(result[1])
+            job_status = JobStatus.from_str(result[2])
+            job_metadata = json.loads(result[4])
+
+            return Job(id=result[0], job_type=job_type, job_status=job_status, created_at=result[3], metadata=job_metadata)
+
+
