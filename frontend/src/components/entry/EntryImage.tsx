@@ -147,36 +147,34 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
 
     return (
       <>
-      {data?.entryImages && <ImageDialog open={imageDialogOpen} title={entry.title} imageUrls={data?.entryImages.map(entryImage => entryImage.url)} onClose={() => setImageDialogOpen(false)} />}
+        {data?.entryImages && <ImageDialog open={imageDialogOpen} title={entry.title} imageUrls={data?.entryImages.map(entryImage => entryImage.url)} onClose={() => setImageDialogOpen(false)} />}
         {hasImage && (
           <CardActionArea onClick={() => setImageDialogOpen(true)}>
-          <CardMedia
-            component="img"
-            height={300}
-            alt={entry.title}
-            sx={{ objectFit: "contain" }}
-            image={data.entryImages[0].url}
-          />
+            <CardMedia
+              component="img"
+              height={300}
+              alt={entry.title}
+              sx={{ objectFit: "contain" }}
+              image={data.entryImages[0].url}
+            />
           </CardActionArea>
         )}
         <CardContent>
           {!hasImage && <Box height={300} />}
           <Typography variant="body2">{entry.entryTextSummary}</Typography>
         </CardContent>
-        {!hasImage && (
-          <CardActions>
-            <Button variant="contained" color="primary">
-              Upload image
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onGenerateImageClicked}
-            >
-              Generate image with AI
-            </Button>
-          </CardActions>
-        )}
+        <CardActions>
+          <Button variant="contained" color="primary">
+            Upload image
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onGenerateImageClicked}
+          >
+            Generate image with AI
+          </Button>
+        </CardActions>
       </>
     );
   };
