@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Card,
+  CardActionArea,
   CardActions,
   CardContent,
   CardMedia,
@@ -13,6 +14,7 @@ import { gql } from "../../__generated__";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { ImageDialog } from "../common/ImageDialog";
 
 const FETCH_ENTRY_IMAGES_QUERY = gql(`
     query FetchEntryImages($campaignId: UUID!, $entryId: UUID!) {
@@ -46,6 +48,7 @@ type EntryImageProps = {
 };
 
 export const EntryImage = ({ entry }: EntryImageProps) => {
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [generateImageJob, setGenerateImageJob] = useState<Job | undefined>();
 
   const fetchGenerateImageJobIntervalHandle = useRef<
@@ -119,9 +122,11 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
       if (responseError) {
         enqueueSnackbar("An error occurred while generating image.", {
           variant: "error",
+          preventDuplicate: true
         });
 
         clearInterval(fetchGenerateImageJobIntervalHandle.current);
+        return;
       }
 
       if (response?.jobs) {
@@ -142,7 +147,9 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
 
     return (
       <>
+      {data?.entryImages && <ImageDialog open={imageDialogOpen} title={entry.title} imageUrls={data?.entryImages.map(entryImage => entryImage.url)} onClose={() => setImageDialogOpen(false)} />}
         {hasImage && (
+          <CardActionArea onClick={() => setImageDialogOpen(true)}>
           <CardMedia
             component="img"
             height={300}
@@ -150,6 +157,7 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
             sx={{ objectFit: "contain" }}
             image={data.entryImages[0].url}
           />
+          </CardActionArea>
         )}
         <CardContent>
           {!hasImage && <Box height={300} />}
