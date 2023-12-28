@@ -46,9 +46,9 @@ class GenerateImageForEntryJob(Job):
         try:
             entry = await EntryRepository.get_entry(entry_id=self.entry_id)
 
-            prompt = "Big scary castle with green dragon on top, fantasy style realistic"  # TODO: Generate prompt from entry description
+            generate_image_prompt = self.llm_service.generate_entry_image_generation_prompt(entry=entry, art_styles=["fantasy", "medieval", "painting", "realistic"])
 
-            generate_image_response = self.llm_service.generate_image(prompt=prompt)
+            generate_image_response = self.llm_service.generate_image(prompt=generate_image_prompt)
 
             image_data_response = requests.get(generate_image_response.url)
 
@@ -64,7 +64,7 @@ class GenerateImageForEntryJob(Job):
             )
 
             self.metadata["image_id"] = str(image_id)
-            self.metadata["prompt"] = prompt
+            self.metadata["prompt"] = generate_image_prompt
 
             update_job_model = UpdateJobModel(
                 job_id=self.id,
