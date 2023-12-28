@@ -56,13 +56,13 @@ class LlmService:
 
         prompt_template = PromptTemplate(
             template=GENERATE_DESCRIPTION_PROMPT,
-            input_variables=["entry_name", "description"]
+            input_variables=["entry_title", "description"]
         )
 
         chain = LLMChain(llm=llm, prompt=prompt_template)
 
-        result = chain.run(entry_name=entry.title, description=entry.entry_text_raw)
-        art_styles_str = str.join(art_styles, " ")
+        result = chain.run(entry_title=entry.title, description=entry.entry_text_raw)
+        art_styles_str = " ".join(art_styles)
 
         return f"{result} | {art_styles_str}"
 
