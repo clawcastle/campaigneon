@@ -12,7 +12,7 @@ import {
 import { Entry, Job, JobStatus } from "../../__generated__/graphql";
 import { gql } from "../../__generated__";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { ImageDialog } from "../common/ImageDialog";
 
@@ -51,6 +51,7 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [generateImageJob, setGenerateImageJob] = useState<Job | undefined>();
 
+
   const fetchGenerateImageJobIntervalHandle = useRef<
     NodeJS.Timeout | undefined
   >();
@@ -75,6 +76,12 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
       },
     }
   );
+
+  const entryImages = useMemo(() => {
+    if (!data?.entryImages) return [];
+
+    return [...data.entryImages].sort(img => img.createdAt).reverse();
+  }, [data?.entryImages])
 
   useEffect(() => {
     if (!generateImageJob || generateImageJob.status == JobStatus.InProgress)
@@ -143,11 +150,11 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
       return <Skeleton height={300} />;
     }
 
-    const hasImage = !loading && !error && data && data.entryImages.length > 0;
+    const hasImage = !loading && !error && entryImages.length > 0;
 
     return (
       <>
-        {data?.entryImages && <ImageDialog open={imageDialogOpen} title={entry.title} imageUrls={data?.entryImages.map(entryImage => entryImage.url)} onClose={() => setImageDialogOpen(false)} />}
+        {entryImages.length > 0 && <ImageDialog open={imageDialogOpen} title={entry.title} imageUrls={entryImages.map(entryImage => entryImage.url)} onClose={() => setImageDialogOpen(false)} />}
         {hasImage && (
           <CardActionArea onClick={() => setImageDialogOpen(true)}>
             <CardMedia
@@ -155,7 +162,7 @@ export const EntryImage = ({ entry }: EntryImageProps) => {
               height={300}
               alt={entry.title}
               sx={{ objectFit: "contain" }}
-              image={data.entryImages[0].url}
+              image={entryImages[0].url}
             />
           </CardActionArea>
         )}

@@ -46,6 +46,9 @@ export const EntryDescription = ({
 
     const entryTextRaw = editor.getText();
 
+    console.log("entry text", entryTextRaw);
+    
+
     try {
       await updateEntryMutationFn({
         variables: {
