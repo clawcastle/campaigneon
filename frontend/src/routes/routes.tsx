@@ -1,6 +1,7 @@
 import { HomePage } from "../pages/Home";
 import { CampaignPage } from "../pages/Campaign";
 import { EntryPage } from "../pages/Entry";
+import { CampaignContextProvider } from "../context/CampaignContext";
 
 export const routes = [
   {
@@ -9,10 +10,14 @@ export const routes = [
   },
   {
     path: "campaigns/:campaignId",
-    element: <CampaignPage />,
+    element: (<CampaignContextProvider>
+      <CampaignPage />
+    </CampaignContextProvider>),
   },
   {
     path: "campaigns/:campaignId/entries/:entryId",
-    element: <EntryPage />,
+    element: (<CampaignContextProvider>
+      <EntryPage />
+    </CampaignContextProvider>),
   },
 ];

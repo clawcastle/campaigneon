@@ -5,6 +5,8 @@ import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { EntryDescription } from "../components/entry/EntryDescription";
 import { EntryImage } from "../components/entry/EntryImage";
+import { useContext, useMemo } from "react";
+import { CampaignContext } from "../context/CampaignContext";
 
 const FETCH_ENTRY_QUERY = gql(`
     query FetchEntry($entryId: UUID!) {
@@ -30,8 +32,18 @@ export const EntryPage = () => {
     variables: { entryId },
   });
 
+  const {campaign} = useContext(CampaignContext);
+
+  const breadcrumbs = useMemo(() => {
+    if (!campaign || !data?.entry) {
+      return [{title: "Campaigns", href: "/"}];
+    }
+
+    return [{title: "Campaigns", href: "/"}, {title: campaign.title, href: `/campaigns/${campaign.id}`}, {title: data.entry.title, href: `/campaigns/${campaign.id}/entries/${data.entry.id}`}]
+  }, [campaign, data?.entry])
+
   return (
-    <Page requireAuthenticatedUser pageTitle={data?.entry.title ?? ""}>
+    <Page requireAuthenticatedUser pageTitle={data?.entry.title ?? ""} breadcrumbs={breadcrumbs}>
       <Grid container spacing={2}>
         {(loading || !data) && (
           <Grid item xs={12} textAlign="center" justifyContent="center">

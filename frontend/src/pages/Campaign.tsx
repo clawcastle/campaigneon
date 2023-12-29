@@ -1,20 +1,28 @@
-import { useParams } from "react-router-dom";
 import { Page } from "./Page";
-import { Box, Grid, Skeleton, Tab, Tabs, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Box, Grid, Skeleton, Tab, Tabs } from "@mui/material";
+import { useContext, useMemo, useState } from "react";
 import {
   CampaignContext,
-  CampaignContextProvider,
 } from "../context/CampaignContext";
 import { CampaignSearchField } from "../components/campaign/CampaignSearchField";
 import { CreateEntryButton } from "../components/entry/CreateEntryButton";
 
-const CampaignPageContent = () => {
+
+export const CampaignPage = () => {
+
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const { campaign, loading, error } = useContext(CampaignContext);
 
+  const breadcrumbs = useMemo(() => {
+    if (!campaign) {
+      return [{ title: "Campaigns", href: "/" }];
+    }
+
+    return [{ title: "Campaigns", href: "/" }, { title: campaign.title, href: `/campaigns/${campaign.id}` }]
+  }, [campaign]);
+
   return (
-    <Page requireAuthenticatedUser pageTitle={campaign?.title ?? ""}>
+    <Page requireAuthenticatedUser pageTitle={campaign?.title ?? ""} breadcrumbs={breadcrumbs}>
       {loading && <Skeleton />}
       {error && <div>An error occurred while trying to fetch campaign..</div>}
       {campaign && (
@@ -39,27 +47,5 @@ const CampaignPageContent = () => {
       )}
       <CreateEntryButton />
     </Page>
-  );
-};
-
-export const CampaignPage = () => {
-  const { campaignId } = useParams();
-
-  useEffect(() => {
-    if (!campaignId) return;
-
-    localStorage.setItem("campaigns.last_viewed", campaignId);
-  }, [campaignId]);
-
-  if (!campaignId) {
-    return (
-      <Typography variant="h5">Campaign ID missing from route.</Typography>
-    );
-  }
-
-  return (
-    <CampaignContextProvider campaignId={campaignId}>
-      <CampaignPageContent />
-    </CampaignContextProvider>
   );
 };

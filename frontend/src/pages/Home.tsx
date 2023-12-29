@@ -30,7 +30,7 @@ const HomePageAuthenticated = () => {
   }
 
   return (
-    <Page requireAuthenticatedUser pageTitle="Campaigneon">
+    <Page requireAuthenticatedUser pageTitle="Campaigneon" breadcrumbs={[]}>
       <CreateCampaignDialog
         open={createCampaignDialogOpen}
         onClose={() => {

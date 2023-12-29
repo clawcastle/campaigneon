@@ -1,13 +1,15 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Breadcrumbs, Link, Toolbar } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 
+export type Breadcrumb = { title: string; href: string; };
+
 type TopBarProps = {
-  pageTitle: string;
+  breadcrumbs: Breadcrumb[]
 };
 
-export const TopBar = ({ pageTitle }: TopBarProps) => {
+export const TopBar = ({ breadcrumbs }: TopBarProps) => {
   const navigate = useNavigate();
 
   const onHomeClicked = useCallback(() => {
@@ -21,7 +23,13 @@ export const TopBar = ({ pageTitle }: TopBarProps) => {
           sx={{ marginRight: 1, cursor: "pointer" }}
           onClick={onHomeClicked}
         />
-        <Typography>{pageTitle}</Typography>
+        <Breadcrumbs>
+          {breadcrumbs.map(breadcrumb => (
+            <Link underline="hover" color="white" href={breadcrumb.href}>
+              {breadcrumb.title}
+            </Link>
+          ))}
+        </Breadcrumbs>
       </Toolbar>
     </AppBar>
   );
